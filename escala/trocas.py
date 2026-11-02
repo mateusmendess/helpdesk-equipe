@@ -23,7 +23,9 @@ MANHA = TrocaSabado.Turno.MANHA
 TARDE = TrocaSabado.Turno.TARDE
 TURNOS = (MANHA, TARDE)
 ESCALA_MUDOU = "A escala mudou enquanto você preenchia."
-DESFACA_A_MAIS_RECENTE = "Desfaça antes a troca mais recente que mexe nesse sábado."
+DESFACA_A_MAIS_RECENTE = (
+    "Desfaça antes a troca mais recente que mexe nesses mesmos turnos."
+)
 
 
 @dataclass(frozen=True)
