@@ -69,7 +69,7 @@ No /admin/, o mixin `MensagensNoFeminino` (em `fila/admin.py`) põe no feminino 
 - **Bloqueio:** 5 senhas erradas em 15 minutos bloqueiam a pessoa (valores em `config/settings.py`: `LOGIN_MAX_TENTATIVAS` e `LOGIN_JANELA_MINUTOS`). A matrícula e o e-mail da mesma pessoa contam juntos: a falha é guardada com o e-mail dela; se o texto digitado não é de ninguém, guarda o texto em minúsculas. No bloqueio nem a senha certa entra; o sucesso zera a contagem e o bloqueio acaba sozinho.
 - **Troca de senha obrigatória:** a conta criada pelo admin vem com senha provisória e, no primeiro acesso, só abre "Trocar senha" (e Sair). Quando o admin redefine a senha de outra pessoa, vale de novo. Não existe "esqueci a senha": quem esquece fala com um admin.
 - **Sem cache:** as telas de quem está logado saem com cabeçalhos de "não guardar" (`core/middleware.py`), para o botão "voltar" não mostrar a tela antiga depois de sair. A página pública, o `/saude/` e os arquivos estáticos não mudam.
-- **Acesso:** login individual. Admins: o Mateus e mais uma pessoa do time. Só admins cadastram pessoas, registram ausências, corrigem registros do galão e configuram a escala. Os demais consultam e registram trocas do galão pelo botão, inclusive cobertura, e trocam sábados seus.
+- **Acesso:** login individual. Admins: o Mateus e quem ele indicar. Só admins cadastram pessoas, registram ausências, corrigem registros do galão e configuram a escala. Os demais consultam e registram trocas do galão pelo botão, inclusive cobertura, e trocam sábados seus.
 
 ---
 
