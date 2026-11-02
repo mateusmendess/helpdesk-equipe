@@ -5,6 +5,9 @@ from conftest import SENHA_DE_TESTE
 
 pytestmark = pytest.mark.django_db
 
+# Senha errada derivada da do conftest (nada de senha escrita no teste).
+SENHA_ERRADA = SENHA_DE_TESTE + "-errada"
+
 
 def entrar(client, email, senha):
     return client.post(reverse("login"), {"username": email, "password": senha})
@@ -30,7 +33,7 @@ def test_email_com_maiusculas_diferentes_tambem_entra(client, membro):
 
 
 def test_senha_errada_nao_entra_e_mostra_o_erro(client, membro):
-    resposta = entrar(client, "pessoa1@exemplo.test", "senha-errada")
+    resposta = entrar(client, "pessoa1@exemplo.test", SENHA_ERRADA)
 
     assert resposta.status_code == 200
     assert "E-mail, matrícula ou senha incorretos." in resposta.content.decode()

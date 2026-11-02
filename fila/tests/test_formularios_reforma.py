@@ -7,6 +7,9 @@ from conftest import SENHA_DE_TESTE
 
 pytestmark = pytest.mark.django_db
 
+# Senha errada derivada da do conftest (nada de senha escrita no teste).
+SENHA_ERRADA = SENHA_DE_TESTE + "-errada"
+
 CAMPO = {"min-h-12", "border-[#7f8f97]", "rounded-[10px]"}
 PRIMARIO = {"min-h-[52px]", "bg-tinta", "text-white"}
 # Senha ficticia derivada da do conftest (nada de senha escrita no teste).
@@ -65,7 +68,7 @@ def test_login_campos_e_botao_com_as_classes_novas(client):
 def test_login_erro_fica_abaixo_do_subtitulo_com_icone_fora_do_texto(client, membro):
     resposta = client.post(
         reverse("login"),
-        {"username": "pessoa1@exemplo.test", "password": "senha-errada"},
+        {"username": "pessoa1@exemplo.test", "password": SENHA_ERRADA},
     )
 
     html = resposta.content.decode()
@@ -175,7 +178,7 @@ def test_campo_com_erro_ganha_a_borda_de_erro(client, membro):
     resposta = client.post(
         reverse("password_change"),
         {
-            "old_password": "nao-e-a-senha",
+            "old_password": SENHA_ERRADA,
             "new_password1": NOVA_SENHA,
             "new_password2": NOVA_SENHA,
         },
