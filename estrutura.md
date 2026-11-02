@@ -132,3 +132,9 @@ Antes de cada tela nova, mostro uma prévia visual para você aprovar.
 - **Dívida ("devendo"):** a leitura da planilha atual (um colega com 1 troca devida e uma troca fora da ordem) foi entendida como cobertura. Vale confirmar com o time.
 - **Ausência:** decidida em 25/10/2026: o ausente é pulado, não deve nada e volta na posição fixa (ver seção 2).
 - **Privacidade:** como o repositório é público, nomes reais do time não entram no repositório (código, testes, docs). Os dados reais ficam só no banco de produção.
+
+---
+
+## 9. Porte e risco
+
+Staging: não (uso interno, cerca de 8 pessoas). Monitoramento de erros: não por enquanto. Testes de navegador (Playwright): não. LGPD: não se aplica (só dados da equipe, sem público externo). Backup do banco: a conferir. Reavaliar quando houver público externo, e-mail para a equipe ou mais pessoas usando.
