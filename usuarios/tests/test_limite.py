@@ -11,6 +11,9 @@ from usuarios.models import FalhaLogin
 
 pytestmark = pytest.mark.django_db
 
+# Senha errada derivada da do conftest (nada de senha escrita no teste).
+SENHA_ERRADA = SENHA_DE_TESTE + "-errada"
+
 MENSAGEM_BLOQUEIO = "Muitas tentativas de entrada. Tente de novo em alguns minutos."
 MENSAGEM_ERRO = "E-mail, matrícula ou senha incorretos."
 
@@ -25,7 +28,7 @@ def esta_logado(client):
 
 def errar(client, email, vezes):
     for _ in range(vezes):
-        entrar(client, email, "senha-errada")
+        entrar(client, email, SENHA_ERRADA)
 
 
 def falhas_antigas(email, quantidade):
@@ -97,7 +100,7 @@ def test_maiusculas_e_espacos_contam_juntos(client, membro):
 def test_email_inexistente_tambem_e_bloqueado_com_a_mesma_mensagem(client):
     errar(client, "ninguem@exemplo.test", 5)
 
-    resposta = entrar(client, "ninguem@exemplo.test", "senha-errada")
+    resposta = entrar(client, "ninguem@exemplo.test", SENHA_ERRADA)
 
     assert MENSAGEM_BLOQUEIO in resposta.content.decode()
 
@@ -162,7 +165,7 @@ def test_login_do_painel_registra_falhas_e_entra_sem_bloqueio(client, admin_usua
     for _ in range(4):
         client.post(
             reverse("admin:login"),
-            {"username": "admin@exemplo.test", "password": "senha-errada"},
+            {"username": "admin@exemplo.test", "password": SENHA_ERRADA},
         )
     assert FalhaLogin.objects.count() == 4
 
@@ -177,7 +180,7 @@ def test_login_do_painel_registra_falhas_e_entra_sem_bloqueio(client, admin_usua
 
 def test_mensagem_uniforme_continua_antes_do_bloqueio(client, membro):
     for tentativa in range(5):
-        resposta = entrar(client, "pessoa1@exemplo.test", "senha-errada")
+        resposta = entrar(client, "pessoa1@exemplo.test", SENHA_ERRADA)
         conteudo = resposta.content.decode()
         assert MENSAGEM_ERRO in conteudo, tentativa
         assert MENSAGEM_BLOQUEIO not in conteudo, tentativa

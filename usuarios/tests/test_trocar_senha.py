@@ -8,7 +8,11 @@ from usuarios.models import Usuario
 
 pytestmark = pytest.mark.django_db
 
-NOVA_SENHA = "jarra-azul-limpa-77"
+# Senha errada derivada da do conftest (nada de senha escrita no teste).
+SENHA_ERRADA = SENHA_DE_TESTE + "-errada"
+NOVA_SENHA = SENHA_DE_TESTE + "-nova"
+OUTRA_SENHA = SENHA_DE_TESTE + "-outra"
+TERCEIRA_SENHA = SENHA_DE_TESTE + "-terceira"
 MENSAGEM_SENHA_IGUAL = "A nova senha precisa ser diferente da atual."
 AVISO = "Por segurança, troque a senha provisória antes de continuar."
 
@@ -70,7 +74,7 @@ def test_logado_ve_a_tela_com_os_tres_campos(client, membro):
 def test_senha_atual_errada_nao_troca(client, membro):
     client.force_login(membro)
 
-    resposta = trocar(client, "senha-errada", NOVA_SENHA)
+    resposta = trocar(client, SENHA_ERRADA, NOVA_SENHA)
 
     assert resposta.status_code == 200
     assert resposta.context["form"].has_error("old_password", "password_incorrect")
@@ -81,7 +85,7 @@ def test_senha_atual_errada_nao_troca(client, membro):
 def test_confirmacao_diferente_nao_troca(client, membro):
     client.force_login(membro)
 
-    resposta = trocar(client, SENHA_DE_TESTE, NOVA_SENHA, "outra-coisa-99")
+    resposta = trocar(client, SENHA_DE_TESTE, NOVA_SENHA, OUTRA_SENHA)
 
     form = resposta.context["form"]
     assert form.has_error("new_password2", "password_mismatch")
@@ -135,7 +139,7 @@ def test_senha_igual_nao_e_dita_se_a_atual_estiver_errada(client, membro):
     # Senao a tela diria se um chute e a senha atual sem conferir a atual.
     client.force_login(membro)
 
-    resposta = trocar(client, "senha-errada", SENHA_DE_TESTE)
+    resposta = trocar(client, SENHA_ERRADA, SENHA_DE_TESTE)
 
     assert resposta.context["form"].has_error("old_password", "password_incorrect")
     assert MENSAGEM_SENHA_IGUAL not in resposta.content.decode()
@@ -444,7 +448,7 @@ def test_redefinir_a_propria_senha_nao_liga_a_marca(client, admin_usuario):
 
 
 @pytest.mark.parametrize(
-    "senha, confirmacao", [("ab1", None), (NOVA_SENHA, "outra-coisa-99")]
+    "senha, confirmacao", [("ab1", None), (NOVA_SENHA, OUTRA_SENHA)]
 )
 def test_redefinicao_recusada_nao_liga_a_marca(
     client, admin_usuario, membro, senha, confirmacao
@@ -483,7 +487,7 @@ def test_senha_redefinida_obriga_a_troca_no_proximo_acesso(admin_usuario, membro
     )
     assert pessoa.get(entrada.url).url == reverse("password_change")
 
-    trocar(pessoa, NOVA_SENHA, "copo-verde-cheio-31")
+    trocar(pessoa, NOVA_SENHA, TERCEIRA_SENHA)
 
     membro.refresh_from_db()
     assert not membro.precisa_trocar_senha
