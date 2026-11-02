@@ -57,6 +57,15 @@ class TrocarSabadoForm(forms.Form):
         else:
             del self.fields["tipo"]
 
+    def add_error(self, field, error):
+        super().add_error(field, error)
+        # Campo com erro: o leitor de tela lê a mensagem (id erro-<campo>,
+        # que o template põe no <p> do erro) junto com o campo.
+        if field in self.fields:
+            attrs = self.fields[field].widget.attrs
+            attrs["aria-invalid"] = "true"
+            attrs["aria-describedby"] = f"erro-{field}"
+
     def clean(self):
         dados = super().clean()
         for campo in ("meu", "outro"):

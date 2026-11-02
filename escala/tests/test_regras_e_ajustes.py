@@ -130,8 +130,9 @@ def test_links_para_as_regras(client, equipe):
     assert re.search(rf"{re.escape(link)}[^>]*>Regras da escala</a>", aba)
     # Lado a lado, como na previa: "Trocas registradas" e depois "Regras".
     assert aba.index("Trocas registradas</a>") < aba.index("Regras da escala</a>")
+    # Na tela de trocar o link ficou em linha própria, depois do parágrafo.
     assert re.search(
-        rf"\(regras 7.2 e 7.4\)\. {re.escape(link)}[^>]*>Regras da escala</a></p>",
+        rf"\(regras 7.2 e 7.4\)\.</p>\s*{re.escape(link)}[^>]*>Regras da escala</a>",
         trocar,
     )
 

@@ -240,3 +240,46 @@ def test_historico_pagina_de_30_em_30(client, equipe, admin_usuario):
     assert historico.count("<li") == 30 and "Mais antigas" in primeira
     assert segunda[segunda.index("Histórico") :].count("<li") == 1
     assert "Mais recentes" in segunda
+
+
+def descritos_por(html, nome):
+    """Ids em aria-describedby do <select> com esse name."""
+    tag = re.search(rf'<select[^>]*name="{nome}"[^>]*>', html)[0]
+    achado = re.search(r'aria-describedby="([^"]*)"', tag)
+    return achado[1].split() if achado else []
+
+
+def test_trocar_sem_escolher_liga_o_erro_a_cada_campo(client, equipe):
+    client.force_login(equipe[0])
+
+    html = client.post(
+        reverse("escala_trocar"), {"meu": "", "outro": ""}
+    ).content.decode()
+
+    for nome in ("meu", "outro"):
+        tag = re.search(rf'<select[^>]*name="{nome}"[^>]*>', html)[0]
+        assert descritos_por(html, nome) == [f"erro-{nome}"]
+        assert 'aria-invalid="true"' in tag
+        assert html.count(f'id="erro-{nome}"') == 1
+
+
+def test_trocar_sem_erro_nao_liga_nada(client, equipe):
+    html = html_de(client, equipe[0], "escala_trocar")
+
+    assert descritos_por(html, "meu") == [] == descritos_por(html, "outro")
+    assert 'id="erro-' not in html
+
+
+def test_link_das_regras_fica_fora_do_paragrafo_com_alvo_de_toque(client, equipe):
+    html = html_de(client, equipe[0], "escala_trocar")
+
+    link = re.search(
+        rf'<a href="{reverse("escala_regras")}" class="([^"]*)">Regras da escala</a>',
+        html,
+    )
+    assert link and "min-h-11" in link[1].split()
+    # Não está dentro de nenhum <p>.
+    antes = html[: link.start()]
+    assert antes.rfind("<p") <= antes.rfind("</p>")
+    # Vem logo antes do botão de registrar.
+    assert html.index("Regras da escala") < html.index("Registrar troca</button>")

@@ -25,14 +25,16 @@
         <div>
           <label for="{{ campo.id_for_label }}" class="block text-[15px] font-semibold">{{ campo.label }}</label>
           {{ campo }}
-          {% for erro in campo.errors %}<p class="mt-1 text-sm text-erro">{{ erro }}</p>{% endfor %}
+          {% for erro in campo.errors %}<p id="erro-{{ campo.name }}" class="mt-1 text-sm text-erro">{{ erro }}</p>{% endfor %}
         </div>
       {% endfor %}
 
       {# Preenchida pelo script abaixo quando os dois sabados estao escolhidos. #}
       <p id="frase-da-troca" class="rounded-[10px] border border-[#bfe0ea] bg-agua px-3 py-2.5 text-sm text-tinta wrap-anywhere" aria-live="polite" hidden></p>
 
-      <p class="text-sm text-texto-suave">Combine antes com a outra pessoa e avise a equipe por e-mail (regras 7.1 e 8). A fila de cada um não muda. Só vale para sábados que ainda não passaram. Em emergência ou troca definitiva, fale com um admin (regras 7.2 e 7.4). <a href="{% url 'escala_regras' %}" class="font-semibold text-tinta underline">Regras da escala</a></p>
+      <p class="text-sm text-texto-suave">Combine antes com a outra pessoa e avise a equipe por e-mail (regras 7.1 e 8). A fila de cada um não muda. Só vale para sábados que ainda não passaram. Em emergência ou troca definitiva, fale com um admin (regras 7.2 e 7.4).</p>
+
+      <a href="{% url 'escala_regras' %}" class="-ml-1 inline-flex min-h-11 items-center px-1 font-semibold text-tinta underline">Regras da escala</a>
 
       <button type="submit"
               class="flex min-h-[52px] w-full items-center justify-center rounded-[10px] bg-tinta px-4 text-[17px] font-bold text-white hover:bg-[#093f57]">Registrar troca</button>
