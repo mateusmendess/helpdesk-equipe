@@ -7,10 +7,10 @@ QUEM E QUEM
 
 REGRAS DE OURO
 1. Leia antes de editar. Cada pedido traz uma lista "LEIA ANTES DE EDITAR": confirme linhas e nomes (podem ter mudado). Se o problema descrito NAO existir ou for diferente, REPORTE e NAO invente correcao. Nos relatorios passados o problema real foi diferente do descrito mais de uma vez; isso e bem-vindo.
-2. Corrija o minimo. Nada de redesenhar, renomear ou refatorar alem do pedido. Nada de dependencia nova nem variavel de ambiente nova sem o pedido mandar.
+2. Corrija o minimo. Nada de redesenhar, renomear ou refatorar alem do pedido (limpeza achada no caminho: anote como achado, nao faca). Nada de dependencia nova nem variavel de ambiente nova sem o pedido mandar. Quando o pedido criar uma variavel de ambiente, acrescente o NOME dela ao .env.example com valor de exemplo falso (nunca o valor real).
 3. Nunca imprima nem grave segredos (senhas, chaves, tokens). Nao peca senhas ao Mateus. Em verificacao local, use banco temporario e credenciais geradas por voce que NAO sao impressas.
 4. Nao acesse producao nem o painel da hospedagem (nem para ler variaveis). Quem confere producao e o analista, so em leitura.
-5. Nunca esconda falha. Se um teste revelar bug fora do pedido, deixe-o como xfail(strict=True) com motivo claro OU reporte e pergunte; nao corrija no meio e nao mascare.
+5. Nunca esconda falha. Se um teste revelar bug fora do pedido, REPORTE e pergunte (o analista decide); so deixe como xfail(strict=True), com motivo claro e citado no relatorio, se o pedido autorizar. Nao corrija no meio e nao mascare.
 6. Se algo for ambiguo e caro de refazer, pergunte antes. Se for barato, escolha o mais simples e seguro e diga qual escolheu.
 7. O repositorio e PUBLICO. Nunca escreva nomes reais de colegas, e-mails, telefones ou outros dados pessoais em codigo, testes, fixtures, documentos ou mensagens de commit/PR; use nomes ficticios (ex.: "Pessoa 1").
 
@@ -36,7 +36,22 @@ VERIFICACAO LOCAL
 - So do que o PR muda, sem refazer telas intocadas. Suba o app local com banco temporario. Para telas, use o Chrome (se a extensao nao estiver conectada, use Chrome headless local sem instalar dependencia) e meça contraste/comportamento com valores reais, nao a olho.
 - Pare servidores e apague arquivos e perfis temporarios que voce criou.
 
-RELATORIO FINAL (vai para o RELATORIO.md na raiz, que voce SOBRESCREVE a cada tarefa; fica fora do Git e nunca e commitado; curto, em linguagem simples, nesta ordem)
+ECONOMIA DE LIMITE (o Mateus usa plano com limite de uso; gaste pouco sem perder qualidade)
+- Execute no modelo que o Mateus selecionou e registre no RELATORIO.md uma linha: "Modelo usado / foi suficiente?" (com o motivo, se nao foi).
+- Se a tarefa se mostrar mais dificil que o previsto (dois fracassos no mesmo ponto, ou escopo muito maior que o pedido), PARE e escreva no RELATORIO.md: "Sugiro subir para <modelo/esforco>: <motivo>". Nao continue tentando e queimando limite.
+- Leia so os arquivos necessarios ao pedido; nao varra o projeto nem releia arquivos ja lidos na sessao. Saidas longas de comando: use head/tail.
+- Sem subagentes, a menos que o pedido peca; se usar, de modelo mais barato.
+- RELATORIO.md curto (limites no RELATORIO FINAL abaixo).
+- As regras de ouro acima valem sempre: economia nunca justifica pular um teste exigido pelo pedido, esconder uma falha ou ampliar o escopo.
+
+PADRAO DE QUALIDADE (resumo; o pedido diz quais itens se aplicam)
+- Testes para regras de negocio e casos de borda (erro e entrada invalida); lint limpo.
+- Seguranca: validar entrada, consultas parametrizadas (ORM), saida escapada, permissoes por papel testadas; nunca dado pessoal ou segredo em log.
+- Telas: responsivo, contraste, navegacao por teclado, rotulos nos campos e estados de erro e vazio.
+- Banco: sem consulta em loop nas telas principais; migracoes cuidadosas. Migracao que possa apagar ou alterar dados existentes: reporte no relatorio e ESPERE a autorizacao do Mateus antes do merge.
+- Se algo do padrao nao couber no pedido, REPORTE como achado; nao amplie o escopo.
+
+RELATORIO FINAL (vai para o RELATORIO.md na raiz, que voce SOBRESCREVE a cada tarefa; fica fora do Git e nunca e commitado; curto, em linguagem simples, nesta ordem; pedido LEVE ate ~15 linhas, COMPLETO ate ~40)
 1. DIVERGENCIAS do pedido primeiro ("nenhuma" se nao houver): onde o problema real era diferente, o que voce nao fez e por que.
 2. Link do PR e commit; se o CI passou e se o PR esta limpo; que o merge NAO foi feito. Lista de arquivos alterados, com uma linha de justificativa para cada um.
 3. O que mudou, item por item, em "antes | depois".
@@ -44,6 +59,7 @@ RELATORIO FINAL (vai para o RELATORIO.md na raiz, que voce SOBRESCREVE a cada ta
 5. Verificacao local: o que foi conferido e, quando houver tela nova, os comandos exatos para o Mateus ver o resultado.
 6. Achados fora do escopo (liste, nao corrija).
 7. Correcoes suas no meio do caminho, com honestidade (ex.: "meu script trocou o fim de linha; refiz").
+8. Modelo usado / foi suficiente?
 Termine o RELATORIO.md com: "Aguardo sua conferencia antes do merge." No chat, ao final, escreva so UMA frase com o link do PR e o aviso de que o RELATORIO.md foi atualizado.
 
 O QUE O MATEUS ESPERA DE VOCE
