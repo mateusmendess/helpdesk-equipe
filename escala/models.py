@@ -131,7 +131,7 @@ class SabadoDuasPessoas(SabadoCadastrado):
     data = models.DateField(
         "data",
         unique=True,
-        help_text="Marque quando for preciso cobrir também a tarde.",
+        help_text="Data do sábado em que também é preciso cobrir a tarde.",
     )
 
     class Meta(SabadoCadastrado.Meta):

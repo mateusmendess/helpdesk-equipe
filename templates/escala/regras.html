@@ -13,7 +13,12 @@
   <section class="mt-4 rounded-[14px] border border-borda bg-white p-4 text-texto" aria-labelledby="regras-sistema">
     <h2 id="regras-sistema" class="text-xs font-bold tracking-wide text-texto-suave uppercase">O sistema aplica</h2>
     <ol class="mt-1">
-      <li class="flex gap-2 border-t border-borda py-2.5 first:border-t-0"><span class="w-7 shrink-0 font-bold text-tinta">1.</span><p class="min-w-0 wrap-anywhere">Revezamento em dois turnos seguindo a tabela.</p></li>
+      <li class="flex gap-2 border-t border-borda py-2.5 first:border-t-0"><span class="w-7 shrink-0 font-bold text-tinta">1.</span>
+        <div class="min-w-0 wrap-anywhere">
+          <p>Revezamento em dois turnos seguindo a tabela.</p>
+          <p class="mt-1">Por padrão o sábado tem 1 pessoa, de manhã; a tarde só entra nos sábados cadastrados com 2 pessoas.</p>
+        </div>
+      </li>
       <li class="flex gap-2 border-t border-borda py-2.5 first:border-t-0"><span class="w-7 shrink-0 font-bold text-tinta">4.</span><p class="min-w-0 wrap-anywhere">Sábado feriado: quem estava escalado passa automaticamente para o próximo sábado.</p></li>
       <li class="flex gap-2 border-t border-borda py-2.5 first:border-t-0"><span class="w-7 shrink-0 font-bold text-tinta">5.</span><p class="min-w-0 wrap-anywhere">Trabalhar no domingo para resolver demanda NÃO influencia a escala (não conta como sábado cumprido).</p></li>
       <li class="flex gap-2 border-t border-borda py-2.5 first:border-t-0"><span class="w-7 shrink-0 font-bold text-tinta">6.</span><p class="min-w-0 wrap-anywhere">Convocação para domingo não influencia a escala.</p></li>
