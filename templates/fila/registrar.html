@@ -6,6 +6,8 @@
 
 {% block content %}
 <main class="mx-auto w-full max-w-md px-4 py-4 md:max-w-xl">
+  <a href="{% url 'home' %}" class="-ml-1 inline-flex min-h-11 items-center px-1 font-semibold text-tinta hover:underline">&lsaquo; Voltar</a>
+
   <h1 class="text-2xl font-extrabold">Registrar troca</h1>
 
   {% if form.non_field_errors %}
@@ -31,12 +33,12 @@
           {# O cartao inteiro e o alvo; o marcado ganha borda na tinta e fundo agua (sem JS). #}
           {% if form.na_fila %}
           <label class="flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[10px] border border-borda bg-white px-3.5 py-2.5 has-[:checked]:border-tinta has-[:checked]:bg-agua has-[:checked]:font-bold has-[:checked]:ring-1 has-[:checked]:ring-tinta">
-            <input type="radio" name="{{ form.quem.html_name }}" value="eu" {% if marcado == "eu" %}checked{% endif %} class="h-5 w-5 shrink-0 accent-tinta">
+            <input type="radio" name="{{ form.quem.html_name }}" value="eu" {% if marcado == "eu" %}checked{% endif %} class="h-6 w-6 shrink-0 accent-tinta">
             <span class="min-w-0 wrap-anywhere">Fui eu ({{ user.first_name|default:user.email }})</span>
           </label>
           {% endif %}
           <label class="flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[10px] border border-borda bg-white px-3.5 py-2.5 has-[:checked]:border-tinta has-[:checked]:bg-agua has-[:checked]:font-bold has-[:checked]:ring-1 has-[:checked]:ring-tinta">
-            <input type="radio" name="{{ form.quem.html_name }}" value="outra" {% if marcado == "outra" %}checked{% endif %} class="h-5 w-5 shrink-0 accent-tinta">
+            <input type="radio" name="{{ form.quem.html_name }}" value="outra" {% if marcado == "outra" %}checked{% endif %} class="h-6 w-6 shrink-0 accent-tinta">
             <span>Foi outra pessoa</span>
           </label>
         </div>

@@ -3,17 +3,17 @@
 {% block cabecalho %}{% include "_cabecalho.html" with aba="galao" %}{% endblock %}
 
 {% block content %}
-<main class="mx-auto w-full max-w-md px-4 py-4 md:grid md:max-w-4xl md:grid-cols-2 md:grid-rows-[auto_1fr] md:items-start md:gap-x-6">
-  {# Coluna da esquerda: saudacao, vez e acao. #}
-  <div>
-    <p class="text-sm text-texto-suave wrap-anywhere">Olá, {{ user.first_name|default:user.email }}</p>
+<main class="mx-auto w-full max-w-md px-4 py-4 md:grid md:max-w-4xl md:grid-cols-2 md:grid-rows-[auto_auto_1fr] md:items-start md:gap-x-6">
+  <p class="mb-2.5 text-sm text-texto-suave wrap-anywhere md:col-span-2">Olá, {{ user.first_name|default:user.email }}</p>
 
+  {# Coluna da esquerda: vez e acao. #}
+  <div>
     {% if not posicoes %}
-      <p class="mt-2 rounded-[14px] border border-borda bg-white p-4 text-texto">Ainda não há ninguém na fila. O admin define a ordem em /admin/.</p>
+      <p class="rounded-[14px] border border-borda bg-white p-4 text-texto">Ainda não há ninguém na fila. O admin define a ordem em /admin/.</p>
     {% elif vez is None %}
-      <p class="mt-2 rounded-[14px] border border-borda bg-white p-4 text-texto">Ninguém disponível agora.</p>
+      <p class="rounded-[14px] border border-borda bg-white p-4 text-texto">Ninguém disponível agora.</p>
     {% else %}
-      <div id="cartao-da-vez" class="mt-2 rounded-[14px] p-4 shadow-sm {% if vez.pk == user.pk %}border-2 border-ok bg-ok-fundo{% else %}border border-[#bfe0ea] bg-agua{% endif %}">
+      <div id="cartao-da-vez" class="rounded-[14px] p-4 shadow-sm {% if vez.pk == user.pk %}border-2 border-ok bg-ok-fundo{% else %}border border-[#bfe0ea] bg-agua{% endif %}">
         {% if vez.pk == user.pk %}
           <p class="text-sm font-semibold text-[#14513a]">É a sua vez!</p>
           <p class="mt-0.5 text-[36px] leading-[1.05] font-extrabold text-[#14513a] wrap-anywhere min-[360px]:text-[40px]">{{ vez.first_name|default:vez.email }}</p>
@@ -43,9 +43,9 @@
     {% endif %}
   </div>
 
-  {# Fila: no computador fica na coluna da direita, ocupando as duas linhas. #}
+  {# Fila: no computador fica na coluna da direita, na altura do cartao da vez. #}
   {% if posicoes %}
-    <section data-cartao="fila" class="mt-6 rounded-[14px] border border-borda bg-white p-4 text-texto md:col-start-2 md:row-span-2 md:row-start-1 md:mt-0" aria-labelledby="titulo-fila">
+    <section data-cartao="fila" class="mt-6 rounded-[14px] border border-borda bg-white p-4 text-texto md:col-start-2 md:row-span-2 md:row-start-2 md:mt-0" aria-labelledby="titulo-fila">
       <h2 id="titulo-fila" class="text-[15px] font-bold">Fila</h2>
       <ol class="mt-2">
         {% for posicao, devendo, ausente_ate in linhas %}
