@@ -6,6 +6,7 @@
 
 {% block content %}
 <main class="mx-auto w-full max-w-md px-4 py-4 md:max-w-4xl">
+  <p class="mb-2.5 text-sm text-texto-suave wrap-anywhere">Olá, {{ user.first_name|default:user.email }}</p>
   {% if configuracao is None %}
     <div class="rounded-[14px] border border-borda bg-white p-4 text-texto">
       <p class="font-bold">A escala de sábado ainda não foi ligada.</p>
