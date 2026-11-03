@@ -27,7 +27,7 @@ def test_tela_inicial_tem_tres_blocos_na_ordem_certa(client, admin_usuario):
     assert [nome for nome, _ in blocos(resposta)] == [
         "Galão de água",
         "Escala de sábado",
-        "Usuarios",
+        "Usuários",
     ]
 
 
@@ -45,7 +45,7 @@ def test_itens_de_cada_bloco_na_ordem_do_pedido(client, admin_usuario):
             "Sábados fechados",
             "Configuração da escala",
         ],
-        "Usuarios": ["Usuários"],
+        "Usuários": ["Usuários"],
     }
 
 
@@ -59,7 +59,7 @@ def test_html_da_tela_inicial_mostra_blocos_na_ordem_e_sem_grupos(
     # O menu lateral e a tela inicial repetem os nomes; a ordem vale para o 1o de cada.
     posicoes = [html.index(n) for n in ("Galão de água", "Escala de sábado")]
     assert posicoes == sorted(posicoes)
-    assert html.index("Escala de sábado") < html.index("Usuarios")
+    assert html.index("Escala de sábado") < html.index("Usuários")
     assert "Autenticação e autorização" not in html
     assert "Authentication and Authorization" not in html
     assert "Grupos" not in html and "/admin/auth/" not in html
@@ -71,7 +71,7 @@ def test_menu_lateral_de_outra_tela_tambem_sem_grupos(client, admin_usuario):
     html = client.get(reverse("admin:fila_troca_changelist")).content.decode()
 
     assert "/admin/auth/group/" not in html
-    assert re.search(r"Galão de água.*Escala de sábado.*Usuarios", html, re.S)
+    assert re.search(r"Galão de água.*Escala de sábado.*Usuários", html, re.S)
 
 
 def test_grupos_seguem_abrindo_pela_url(client, admin_usuario):
@@ -134,7 +134,7 @@ def test_outro_app_futuro_vai_depois_em_ordem_alfabetica(monkeypatch):
         _app("zeta", "Zeta", "Coisa"),
         _app("escala", "Escala de sábado", "TrocaSabado"),
         _app("beta", "Beta", "Coisa"),
-        _app("usuarios", "Usuarios", "Usuario"),
+        _app("usuarios", "Usuários", "Usuario"),
         _app("fila", "Galão de água", "Troca"),
     ]
 
