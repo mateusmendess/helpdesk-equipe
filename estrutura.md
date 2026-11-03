@@ -24,6 +24,7 @@ Os formulários (entrar, registrar troca, trocar senha e senha alterada) seguem 
 O cabeçalho aceita parâmetros no include: `marca_p=True` (a marca vira `<p>` quando a página tem o próprio `<h1>`) e `sem_menu=True` (telas de senha, sem menu nem links); o entrar não tem cabeçalho.
 O histórico agrupa as trocas por rodada (título "Rodada N" com o total de trocas da rodada inteira, contado numa consulta só), com data e hora empilhadas em cada cartão.
 No /admin/, o mixin `MensagensNoFeminino` (em `fila/admin.py`) põe no feminino as mensagens de sucesso de Troca, Ausência e Rodada; os seletores de pessoa mostram "Escolha uma pessoa" como opção vazia.
+A tela inicial do /admin/ tem três blocos, nesta ordem: **Galão de água** (Trocas do galão, Ausências, Rodadas), **Escala de sábado** (Trocas de sábado, Sábados sem escala, Sábados com 2 pessoas, Sábados fechados, Configuração da escala) e **Usuários**. "Grupos" (Autenticação e autorização) não aparece na lista nem no menu lateral, mas `/admin/auth/group/` segue abrindo para o superusuário. A ordem vem de `config/admin.py` (`PainelAdminSite`, ligado por `config/apps.py` no lugar de `django.contrib.admin` em `INSTALLED_APPS`); um app novo entra depois, em ordem alfabética.
 
 **Página pública e identidade:** quem não entrou vê, em `/`, uma página pública (`templates/publica/inicio.html`), só HTML e CSS, sem JavaScript e sem ler o banco; quem entrou vê o galão no mesmo endereço. A logo "interseção" (dois quadrados que se cruzam, com o encontro vazado) está no partial `templates/_logo.html` e aparece no cabeçalho, na entrada e na página pública; o ícone da aba (`static/img/favicon.svg`, `favicon.ico` e `apple-touch-icon.png`) é a mesma marca, em branco sobre fundo azul. A tela de entrada (`/entrar/`) tem o cartão centralizado na tela.
 
@@ -205,18 +206,18 @@ galao-helpdesk/
 ├── conftest.py                fixtures e senha falsa dos testes
 ├── requirements.txt           dependências de produção (requirements-dev.txt: + pytest e ruff)
 ├── .python-version            Python 3.13
-├── config/                    settings.py, urls.py (todas as rotas), wsgi.py e asgi.py
+├── config/                    settings.py, urls.py (todas as rotas), wsgi.py e asgi.py; admin.py (PainelAdminSite: blocos e ordem do /admin/) e apps.py (PainelAdminConfig, liga esse site)
 ├── core/                      página inicial "/" (pública ou galão), /saude/ e o middleware sem cache
 ├── fila/                      GALÃO: models.py, regras.py (vez, rodada, dívida), views, forms e admin
 ├── escala/                    ESCALA DE SÁBADO: models.py, calculo.py, trocas.py, datas.py, views, forms, admin e o comando congelar_escala
-├── usuarios/                  LOGIN: models.py (Usuario, FalhaLogin), backends.py, limite.py, middleware.py (troca de senha), forms, admin e o comando criar_equipe_de_teste
+├── usuarios/                  LOGIN: models.py (Usuario, FalhaLogin), backends.py, limite.py, sinais.py (limite de tentativas), middleware.py (troca de senha), views.py (trocar senha), forms, admin e o comando criar_equipe_de_teste
 ├── templates/                 HTML: base.html, partials (_cabecalho, _logo...), e as pastas core, fila, escala, publica e registration
 ├── static_src/input.css       entrada do Tailwind (tokens de cor no @theme)
 └── static/                    css/output.css (gerado pelo Tailwind) e img/ (favicon e ícone)
 ```
 
 - **Regras de negócio:** `fila/regras.py` (galão), `escala/calculo.py`, `escala/trocas.py` e `escala/datas.py` (escala) e `usuarios/limite.py` (bloqueio de tentativas).
-- **Testes:** pasta `tests/` dentro de cada app (`core`, `fila`, `escala` e `usuarios`). As migrações ficam em `migrations/`, também dentro de cada app.
+- **Testes:** pasta `tests/` dentro de cada app (`config`, `core`, `fila`, `escala` e `usuarios`). As migrações ficam em `migrations/`, também dentro de cada app.
 - **CSS gerado:** `static/css/output.css` vai para o Git e é regerado com `./tools/tailwindcss.exe -i static_src/input.css -o static/css/output.css --minify`.
 - **Fora do Git:** `.env`, `db.sqlite3`, `.venv/`, `tools/` (executável do Tailwind), `staticfiles/`, os caches, `pedidos/`, `task.md` e `RELATORIO.md`.
 

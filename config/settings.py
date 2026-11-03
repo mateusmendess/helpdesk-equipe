@@ -44,7 +44,7 @@ if HTTPS_SEGURO:
 # Aplicacoes
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "config.apps.PainelAdminConfig",  # no lugar de django.contrib.admin
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

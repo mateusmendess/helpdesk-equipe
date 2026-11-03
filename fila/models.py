@@ -63,7 +63,7 @@ class Troca(models.Model):
 
     class Meta:
         verbose_name = "troca"
-        verbose_name_plural = "trocas"
+        verbose_name_plural = "trocas do galão"
         ordering = ["-data_hora"]
         constraints = [
             models.UniqueConstraint(
