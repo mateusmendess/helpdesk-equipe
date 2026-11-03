@@ -217,7 +217,7 @@ galao-helpdesk/
 ```
 
 - **Regras de negócio:** `fila/regras.py` (galão), `escala/calculo.py`, `escala/trocas.py` e `escala/datas.py` (escala) e `usuarios/limite.py` (bloqueio de tentativas).
-- **Testes:** pasta `tests/` dentro de cada app (`config`, `core`, `fila`, `escala` e `usuarios`). As migrações ficam em `migrations/`, também dentro de cada app.
+- **Testes:** pasta `tests/` dentro de cada app (`config`, `core`, `fila`, `escala` e `usuarios`). As migrações ficam em `migrations/`, também dentro de cada app. Os testes usam o hasher MD5 (fixture autouse no `conftest.py`, só para ganhar velocidade); o marcador `hash_real` volta ao hash de produção (PBKDF2) num teste.
 - **CSS gerado:** `static/css/output.css` vai para o Git e é regerado com `./tools/tailwindcss.exe -i static_src/input.css -o static/css/output.css --minify`.
 - **Fora do Git:** `.env`, `db.sqlite3`, `.venv/`, `tools/` (executável do Tailwind), `staticfiles/`, os caches, `pedidos/`, `task.md` e `RELATORIO.md`.
 

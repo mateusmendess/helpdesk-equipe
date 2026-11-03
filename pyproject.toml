@@ -1,6 +1,7 @@
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py"]
+markers = ["hash_real: usa o hasher de senha de producao (PBKDF2), sem o hash rapido dos testes"]
 
 [tool.ruff]
 extend-exclude = ["*/migrations/*"]
