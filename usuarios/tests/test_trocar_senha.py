@@ -195,6 +195,10 @@ def test_tela_de_senha_alterada(client, membro):
     assert "Senha alterada" in conteudo
     assert "Sua senha foi alterada com sucesso." in conteudo
     assert "Sua nova senha já vale." not in conteudo
+    # Cabecalho com menu da conta e sem o cartao branco em volta.
+    assert 'aria-label="Menu da conta"' in conteudo
+    assert "rounded-[14px]" not in conteudo
+    assert "Voltar ao início" in conteudo
 
 
 def test_nao_existe_esqueci_a_senha(client):

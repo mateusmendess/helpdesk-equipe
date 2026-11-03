@@ -26,13 +26,15 @@
 
     <fieldset>
       <legend class="text-[15px] font-bold">{{ form.quem.label }}</legend>
-      {% with marcado=form.quem.value|default:"eu" %}
+      {% with marcado=form.quem.value|default:form.quem.initial %}
         <div class="mt-2 space-y-2">
           {# O cartao inteiro e o alvo; o marcado ganha borda na tinta e fundo agua (sem JS). #}
+          {% if form.na_fila %}
           <label class="flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[10px] border border-borda bg-white px-3.5 py-2.5 has-[:checked]:border-tinta has-[:checked]:bg-agua has-[:checked]:font-bold has-[:checked]:ring-1 has-[:checked]:ring-tinta">
             <input type="radio" name="{{ form.quem.html_name }}" value="eu" {% if marcado == "eu" %}checked{% endif %} class="h-5 w-5 shrink-0 accent-tinta">
             <span class="min-w-0 wrap-anywhere">Fui eu ({{ user.first_name|default:user.email }})</span>
           </label>
+          {% endif %}
           <label class="flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[10px] border border-borda bg-white px-3.5 py-2.5 has-[:checked]:border-tinta has-[:checked]:bg-agua has-[:checked]:font-bold has-[:checked]:ring-1 has-[:checked]:ring-tinta">
             <input type="radio" name="{{ form.quem.html_name }}" value="outra" {% if marcado == "outra" %}checked{% endif %} class="h-5 w-5 shrink-0 accent-tinta">
             <span>Foi outra pessoa</span>

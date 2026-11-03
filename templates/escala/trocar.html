@@ -22,7 +22,7 @@
     <form method="post" class="mt-4 space-y-4">
       {% csrf_token %}
       {% if admin %}
-        <p class="text-sm text-texto-suave">Como admin, você também pode registrar a troca entre duas outras pessoas: escolha o sábado delas no grupo Outras pessoas.</p>
+        <p class="text-sm text-texto-suave">A troca é entre os dois sábados: pode ser o seu com o de outra pessoa, ou o de duas outras pessoas.</p>
       {% endif %}
       {% for campo in form %}
         <div>

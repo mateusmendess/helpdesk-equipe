@@ -109,7 +109,9 @@ def test_admin_ve_todos_e_o_tipo(client, equipe, admin_usuario):
     html = html_de(client, admin_usuario, "escala_trocar")
 
     assert len(opcoes(html, "meu")) == 12 == len(opcoes(html, "outro"))
-    assert "Sábado da outra pessoa" in html
+    assert "Primeiro sábado" in html
+    assert "Segundo sábado" in html
+    assert "Sábado da outra pessoa" not in html
     assert opcoes(html, "tipo") == ["Combinada", "Emergência"]
 
 
@@ -287,7 +289,10 @@ def test_link_das_regras_fica_fora_do_paragrafo_com_alvo_de_toque(client, equipe
 
 # --- Pedido 43: grupos (optgroup) para o admin em "Trocar de sabado" ---
 
-AJUDA_ADMIN = "Como admin, você também pode registrar a troca entre duas outras pessoas"
+AJUDA_ADMIN = (
+    "A troca é entre os dois sábados: pode ser o seu com o de outra pessoa, "
+    "ou o de duas outras pessoas."
+)
 
 
 def grupos(html, campo):
@@ -362,3 +367,17 @@ def test_membro_continua_com_lista_plana_e_sem_ajuda_de_admin(client, equipe):
     assert "<optgroup" not in html
     assert AJUDA_ADMIN not in html
     assert not any("Pessoa 1" in o for o in opcoes(html, "outro"))
+
+
+def test_rotulos_do_admin_e_do_membro(client, equipe):
+    admin = admin_da_escala(equipe)
+
+    html_admin = html_de(client, admin, "escala_trocar")
+    html_membro = html_de(client, equipe[1], "escala_trocar")
+
+    assert ">Primeiro sábado</label>" in html_admin
+    assert ">Segundo sábado</label>" in html_admin
+    assert ">Meu sábado</label>" not in html_admin
+    assert ">Meu sábado</label>" in html_membro
+    assert ">Sábado que vou assumir</label>" in html_membro
+    assert "Primeiro sábado" not in html_membro

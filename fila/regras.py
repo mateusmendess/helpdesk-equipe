@@ -199,6 +199,9 @@ def saldos_devendo():
     return {usuario_id: n for usuario_id, n in saldo.items() if n > 0}
 
 
+SO_DA_FILA = "Só quem está na fila do galão pode ser quem trocou."
+
+
 def registrar_troca(titular_esperado, executor, registrada_por, observacao=""):
     """Grava a troca da vez ATUAL, se ela ainda e de titular_esperado.
 
@@ -206,6 +209,10 @@ def registrar_troca(titular_esperado, executor, registrada_por, observacao=""):
     calculada aqui. Se nao bate (ou se outra troca entrou antes), levanta
     VezMudou e nada e gravado.
     """
+    if executor is None or not executor.is_active or executor.ordem is None:
+        # Regra da tela: so quem esta na fila pode ser quem trocou. O admin do
+        # Django grava a Troca direto e nao passa por aqui.
+        raise ValidationError({"executor": SO_DA_FILA})
     try:
         with transaction.atomic():
             rodada = rodada_atual()

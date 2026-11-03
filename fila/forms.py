@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from .regras import nome_de_exibicao
+from .regras import SO_DA_FILA, nome_de_exibicao
 
 # Mesmas classes dos campos de templates/registration/login.html (o Tailwind so le
 # templates/): 48 px de altura, borda #7F8F97 e o foco global na tinta.
@@ -42,6 +42,10 @@ class RegistrarTrocaForm(forms.Form):
     def __init__(self, *args, usuario, **kwargs):
         super().__init__(*args, **kwargs)
         self.usuario = usuario
+        # Quem esta fora da fila (o chefe) so registra a troca de outra pessoa.
+        self.na_fila = usuario.is_active and usuario.ordem is not None
+        if not self.na_fila:
+            self.fields["quem"].initial = OUTRA_PESSOA
         campo = self.fields["executor"]
         campo.queryset = (
             get_user_model()
@@ -53,6 +57,14 @@ class RegistrarTrocaForm(forms.Form):
 
     def clean(self):
         dados = super().clean()
+        if not self.na_fila:
+            if dados.get("quem") == FUI_EU:
+                self.add_error("quem", SO_DA_FILA)
+            elif "executor" in self.errors and self.data.get("executor") == str(
+                self.usuario.pk
+            ):
+                # Escolheu a si mesmo na lista: mesma regra, mesma mensagem.
+                self.errors["executor"] = self.error_class([SO_DA_FILA])
         if dados.get("quem") == OUTRA_PESSOA and not dados.get("executor"):
             if "executor" not in self.errors:
                 self.add_error("executor", "Escolha quem trocou o galão.")

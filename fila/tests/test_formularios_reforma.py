@@ -216,7 +216,8 @@ def test_senha_alterada_com_icone_e_botao(client, membro):
     )
     assert PRIMARIO <= classes(html, r'<a href="/"\s+class="[^"]*">')
     assert "Voltar ao início" in html
-    assert "<summary" not in html
+    # Pedido 44: cabecalho normal, com o menu da conta.
+    assert "<summary" in html
 
 
 # Todas
