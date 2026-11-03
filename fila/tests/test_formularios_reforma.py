@@ -110,7 +110,7 @@ def test_registrar_opcoes_como_cartoes_marcados_sem_js(client, equipe):
         rotulo = set(rotulo.group(1).split())
         assert {"min-h-[52px]", "has-[:checked]:border-tinta"} <= rotulo
         assert "has-[:checked]:bg-agua" in rotulo
-    assert 'value="eu" checked class="h-5 w-5 shrink-0 accent-tinta"' in html
+    assert 'value="eu" checked class="h-6 w-6 shrink-0 accent-tinta"' in html
 
 
 def test_registrar_um_unico_cancelar_ao_lado_do_botao(client, equipe):

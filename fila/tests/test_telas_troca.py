@@ -283,3 +283,13 @@ def test_aviso_antigo_fica_fora_do_bloco_do_seletor(client, equipe):
     bloco = html.split('id="bloco-outra-pessoa"')[1].split('id="aviso-outra"')[0]
     assert "dever 1 troca" not in bloco
     assert 'name="executor"' in bloco
+
+
+def test_registrar_troca_tem_link_voltar_para_o_inicio(client, equipe, admin_usuario):
+    esperado = '<a href="{}"'.format(reverse("home"))
+    # Pessoa na fila e pessoa fora da fila (o admin nao tem ordem).
+    for usuario in (equipe[1], admin_usuario):
+        html = tela(client, usuario, "registrar_troca")
+
+        trecho = html.split("<main")[1].split("<h1")[0]
+        assert esperado in trecho and "&lsaquo; Voltar" in trecho
