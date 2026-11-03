@@ -166,7 +166,9 @@ def test_senha_obrigatoria_sem_menu_sem_voltar_e_com_sair(client, membro):
 def test_senha_normal_com_voltar_no_topo_e_sem_sair(client, membro):
     html = pagina(client, membro, "password_change")
 
-    assert 'action="/sair/"' not in html and "<summary" not in html
+    # Pelo menu: cabecalho normal; sem o botao "Sair" da troca obrigatoria.
+    assert 'aria-label="Menu da conta"' in html
+    assert "border-2 border-tinta bg-white px-4 font-semibold" not in html
     voltar = re.search(r'<a href="/" class="([^"]*)">&lsaquo; Voltar</a>', html)
     assert voltar and "min-h-11" in voltar.group(1).split()
     assert html.index("&lsaquo; Voltar") < html.index("Trocar senha</h1>")

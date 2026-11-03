@@ -283,3 +283,82 @@ def test_link_das_regras_fica_fora_do_paragrafo_com_alvo_de_toque(client, equipe
     assert antes.rfind("<p") <= antes.rfind("</p>")
     # Vem logo antes do botão de registrar.
     assert html.index("Regras da escala") < html.index("Registrar troca</button>")
+
+
+# --- Pedido 43: grupos (optgroup) para o admin em "Trocar de sabado" ---
+
+AJUDA_ADMIN = "Como admin, você também pode registrar a troca entre duas outras pessoas"
+
+
+def grupos(html, campo):
+    select = re.search(rf'<select name="{campo}".*?</select>', html, flags=re.S)
+    assert select, campo
+    return re.findall(r'<optgroup label="([^"]+)"', select.group(0))
+
+
+def admin_da_escala(equipe):
+    # A Pessoa 1 vira admin: tem turnos proprios (grupo "Meus sábados").
+    equipe[0].is_staff = equipe[0].is_superuser = True
+    equipe[0].save()
+    return equipe[0]
+
+
+def test_admin_ve_grupos_na_ordem_certa_de_cada_campo(client, equipe):
+    admin = admin_da_escala(equipe)
+
+    html = html_de(client, admin, "escala_trocar")
+
+    assert grupos(html, "meu") == ["Meus sábados", "Outras pessoas"]
+    assert grupos(html, "outro") == ["Outras pessoas", "Meus sábados"]
+    assert len(opcoes(html, "meu")) == 12 == len(opcoes(html, "outro"))
+    meu = re.search(r'<select name="meu".*?</select>', html, flags=re.S).group(0)
+    assert "Escolha um sábado" in meu.split("<optgroup")[0]  # continua o primeiro
+    meus_sabados = meu.split("</optgroup>")[0]
+    assert "Pessoa 1" in meus_sabados and "Pessoa 2" not in meus_sabados
+    assert AJUDA_ADMIN in html
+
+
+def test_admin_sem_turno_proprio_nao_ve_grupo_vazio(client, equipe, admin_usuario):
+    html = html_de(client, admin_usuario, "escala_trocar")
+
+    assert grupos(html, "meu") == ["Outras pessoas"]
+    assert grupos(html, "outro") == ["Outras pessoas"]
+
+
+def test_valor_das_opcoes_do_admin_nao_muda_e_cada_grupo_segue_a_data(client, equipe):
+    admin = admin_da_escala(equipe)
+
+    html = html_de(client, admin, "escala_trocar")
+
+    valores = re.findall(r'<option value="([^"]+)"', html.split('name="outro"')[0])
+    assert f"{s(0).isoformat()}|manha|{admin.pk}" in valores
+    meus = [v for v in valores if v.endswith(f"|{admin.pk}")]
+    assert meus == sorted(meus)
+    assert all(
+        re.fullmatch(r"\d{4}-\d{2}-\d{2}\|(manha|tarde)\|\d+", v) for v in valores
+    )
+
+
+def test_admin_troca_o_proprio_sabado_com_o_de_outra_pessoa(client, equipe):
+    admin, p3 = admin_da_escala(equipe), equipe[2]
+    client.force_login(admin)
+
+    resposta = client.post(
+        reverse("escala_trocar"),
+        {
+            "meu": f"{s(0).isoformat()}|manha|{admin.pk}",
+            "outro": f"{s(2).isoformat()}|manha|{p3.pk}",
+            "tipo": "combinada",
+        },
+    )
+
+    assert resposta.status_code == 302
+    assert TrocaSabado.objects.count() == 1
+
+
+def test_membro_continua_com_lista_plana_e_sem_ajuda_de_admin(client, equipe):
+    html = html_de(client, equipe[0], "escala_trocar")
+
+    assert "<optgroup" not in html
+    assert AJUDA_ADMIN not in html
+    assert not any("Pessoa 1" in o for o in opcoes(html, "outro"))

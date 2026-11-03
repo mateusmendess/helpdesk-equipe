@@ -113,7 +113,7 @@ def test_lista_tem_ativos_menos_quem_esta_logado(client, equipe, admin_usuario):
     opcoes = list(form.fields["executor"].queryset)
     assert equipe[0] not in opcoes
     assert equipe[6] not in opcoes
-    assert admin_usuario in opcoes
+    assert admin_usuario not in opcoes  # ativo, mas sem ordem (fora da fila)
     assert equipe[1] in opcoes
 
 
@@ -304,3 +304,27 @@ def test_outros_metodos_sao_recusados(client, equipe):
     assert client.put(URL).status_code == 405
     assert client.post(reverse("historico")).status_code == 405
     assert client.post(reverse("home")).status_code == 405
+
+
+# --- Pedido 43: so quem esta na fila pode ser escolhido como executor ---
+
+
+def test_ativo_sem_ordem_nao_aparece_nem_e_aceito_como_executor(
+    client, equipe, django_user_model
+):
+    chefe = django_user_model.objects.create_user(
+        email="chefe@exemplo.test", first_name="Pessoa Chefe"
+    )
+    assert chefe.is_active and chefe.ordem is None
+
+    client.force_login(equipe[0])
+    opcoes = list(client.get(URL).context["form"].fields["executor"].queryset)
+    assert chefe not in opcoes
+    assert equipe[1] in opcoes  # ativo com ordem aparece, na ordem da fila
+    assert opcoes == sorted(opcoes, key=lambda u: u.ordem)
+
+    resposta = postar(client, equipe[0], equipe[0], quem="outra", executor=chefe)
+
+    assert resposta.status_code == 200
+    assert "executor" in resposta.context["form"].errors
+    assert Troca.objects.count() == 0
