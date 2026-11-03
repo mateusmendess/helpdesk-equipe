@@ -73,10 +73,10 @@ Fila: a tela inicial mostra a rodada, de quem é a vez e a fila de 1 a 7.
 A `ordem` de cada usuário (no /admin/) define a posição na fila; quem não tem ordem fica fora.
 Qualquer pessoa logada registra a troca pelo botão "Troquei o galão" na tela inicial (inclusive cobertura).
 O histórico completo fica em "Ver histórico" (/trocas/); a marca "devendo N" vem desse histórico.
-O admin ainda pode lançar trocas em /admin/ (Fila › Trocas).
+O admin ainda pode lançar trocas em /admin/ (Galão de água › Trocas do galão).
 No /admin/, o admin corrige o executor e a observação de uma troca; o "devendo" se acerta sozinho.
 Apagar só vale para uma troca da rodada atual, ou da última rodada fechada enquanto a atual estiver vazia (essa rodada é reaberta).
-Ausências: no /admin/ (Fila › Ausências), o admin cadastra a pessoa, o início e o fim (fim em branco = sem data de volta).
+Ausências: no /admin/ (Galão de água › Ausências), o admin cadastra a pessoa, o início e o fim (fim em branco = sem data de volta).
 Quem está ausente hoje é pulado na fila e aparece como "ausente até DD/MM" na tela inicial.
 
 ### Testes e ruff
