@@ -37,14 +37,8 @@ class UsuarioAlteracaoForm(UserChangeForm):
         fields = "__all__"
 
 
-class EntrarForm(AuthenticationForm):
-    """Login por matricula ou e-mail, com uma so mensagem de erro."""
-
-    error_messages = {
-        **AuthenticationForm.error_messages,
-        "invalid_login": "E-mail, matrícula ou senha incorretos.",
-        "bloqueado": "Muitas tentativas de entrada. Tente de novo em alguns minutos.",
-    }
+class ChecaEsperaMixin:
+    """Mostra a mensagem de espera do limite de tentativas (/entrar/ e /admin/)."""
 
     def clean(self):
         # Checa o bloqueio antes de conferir a senha: com a pessoa bloqueada,
@@ -55,12 +49,23 @@ class EntrarForm(AuthenticationForm):
         return super().clean()
 
 
-class EntrarPainelForm(AdminAuthenticationForm):
-    """Login do /admin/: mesmo rotulo e mesma mensagem de erro do /entrar/."""
+class EntrarForm(ChecaEsperaMixin, AuthenticationForm):
+    """Login por matricula ou e-mail, com uma so mensagem de erro."""
+
+    error_messages = {
+        **AuthenticationForm.error_messages,
+        "invalid_login": "E-mail, matrícula ou senha incorretos.",
+        "bloqueado": "Muitas tentativas de entrada. Tente de novo em alguns minutos.",
+    }
+
+
+class EntrarPainelForm(ChecaEsperaMixin, AdminAuthenticationForm):
+    """Login do /admin/: mesmo rotulo e mesmas mensagens de erro do /entrar/."""
 
     error_messages = {
         **AdminAuthenticationForm.error_messages,
         "invalid_login": EntrarForm.error_messages["invalid_login"],
+        "bloqueado": EntrarForm.error_messages["bloqueado"],
     }
 
     def __init__(self, *args, **kwargs):

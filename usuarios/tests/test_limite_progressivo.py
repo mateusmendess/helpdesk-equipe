@@ -334,11 +334,31 @@ def test_mensagens_iguais_para_conta_existente_e_inexistente(client, membro):
         assert MENSAGEM_ERRO not in conteudo, email
 
 
-def test_painel_em_espera_mostra_a_mensagem_de_sempre(client, admin_usuario):
-    # No painel a espera aparece como a mensagem de senha errada (como antes),
-    # igual para conta que existe e que nao existe.
+def test_painel_em_espera_da_conta_mostra_a_mensagem_de_espera(client, admin_usuario):
+    # Igual ao /entrar/, para conta que existe e que nao existe.
     for email in ("admin@exemplo.test", "ninguem@exemplo.test"):
-        errar(client, email, 5)
-        conteudo = entrar_no_painel(client, email, SENHA_ERRADA).content.decode()
-        assert MENSAGEM_ERRO in conteudo, email
-        assert MENSAGEM_BLOQUEIO not in conteudo, email
+        for _ in range(5):
+            conteudo = entrar_no_painel(client, email, SENHA_ERRADA).content.decode()
+            assert MENSAGEM_ERRO in conteudo, email
+            assert MENSAGEM_BLOQUEIO not in conteudo, email
+
+        conteudo = entrar_no_painel(client, email, SENHA_DE_TESTE).content.decode()
+        assert MENSAGEM_BLOQUEIO in conteudo, email
+        assert MENSAGEM_ERRO not in conteudo, email
+
+    assert not esta_logado(client)
+    # As tentativas durante a espera nao foram registradas.
+    assert FalhaLogin.objects.count() == 10
+
+
+def test_painel_em_espera_do_ip_mostra_a_mensagem_de_espera(client, admin_usuario):
+    errar_em_contas_diferentes(client, 20)
+
+    conteudo = entrar_no_painel(
+        client, "admin@exemplo.test", SENHA_DE_TESTE
+    ).content.decode()
+
+    assert MENSAGEM_BLOQUEIO in conteudo
+    assert MENSAGEM_ERRO not in conteudo
+    assert not esta_logado(client)
+    assert FalhaLogin.objects.count() == 20
