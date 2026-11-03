@@ -157,13 +157,27 @@ def _opcoes(usuario, admin):
             if dono is None:
                 continue
             if admin:
-                meus.append(opcao(item, turno))
-                outros.append(opcao(item, turno))
+                # Os dois campos veem tudo; o dono e so para agrupar.
+                par = (opcao(item, turno), dono.pk == usuario.pk)
+                meus.append(par)
+                outros.append(par)
             elif dono.pk == usuario.pk:
                 meus.append(opcao(item, turno))
             else:
                 outros.append(opcao(item, turno))
+    if admin:
+        meus = _agrupar(meus, primeiro="Meus sábados", segundo="Outras pessoas")
+        outros = _agrupar(outros, primeiro="Outras pessoas", segundo="Meus sábados")
     return meus, outros
+
+
+def _agrupar(pares, primeiro, segundo):
+    """Choices agrupadas (optgroup) para o admin: "Meus sábados" = turnos dele.
+    Grupo vazio nao entra; a ordem por data dentro do grupo e a de antes."""
+    dele = [o for o, meu in pares if meu]
+    dos_outros = [o for o, meu in pares if not meu]
+    grupos = {"Meus sábados": dele, "Outras pessoas": dos_outros}
+    return [(nome, grupos[nome]) for nome in (primeiro, segundo) if grupos[nome]]
 
 
 @login_required

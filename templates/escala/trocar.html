@@ -21,6 +21,9 @@
   {% else %}
     <form method="post" class="mt-4 space-y-4">
       {% csrf_token %}
+      {% if admin %}
+        <p class="text-sm text-texto-suave">Como admin, você também pode registrar a troca entre duas outras pessoas: escolha o sábado delas no grupo Outras pessoas.</p>
+      {% endif %}
       {% for campo in form %}
         <div>
           <label for="{{ campo.id_for_label }}" class="block text-[15px] font-semibold">{{ campo.label }}</label>

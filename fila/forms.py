@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.db.models import F
 
 from .regras import nome_de_exibicao
 
@@ -46,9 +45,9 @@ class RegistrarTrocaForm(forms.Form):
         campo = self.fields["executor"]
         campo.queryset = (
             get_user_model()
-            .objects.filter(is_active=True)
+            .objects.filter(is_active=True, ordem__isnull=False)
             .exclude(pk=usuario.pk)
-            .order_by(F("ordem").asc(nulls_last=True), "email")
+            .order_by("ordem", "email")
         )
         campo.label_from_instance = nome_de_exibicao
 

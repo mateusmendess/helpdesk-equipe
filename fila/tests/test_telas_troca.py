@@ -243,3 +243,43 @@ def test_admin_mostra_a_ajuda_do_executor(client, admin_usuario, equipe):
         "Se foi o próprio titular quem trocou, escolha o mesmo nome do titular. "
         "Escolha outro nome só quando houve cobertura."
     )
+
+
+# --- Pedido 43: aviso da divida em "Registrar troca" ---
+
+AVISO_OUTRA = (
+    "Se quem trocou não for Pessoa 1, a vez de Pessoa 1 conta como cumprida e "
+    "essa pessoa passa a dever 1 troca. Quem trocou no lugar dela abate 1 da "
+    "própria dívida, se tiver."
+)
+AVISO_EU = (
+    "Você não é a pessoa da vez. A vez de Pessoa 1 conta como cumprida e essa "
+    "pessoa passa a dever 1 troca. Você abate 1 da sua própria dívida, se tiver."
+)
+
+
+def test_aviso_novo_existe_so_para_quem_nao_e_da_vez(client, equipe):
+    # Pessoa 1 e a da vez (fila nova); Pessoa 2 abre a tela.
+    html = tela(client, equipe[1], "registrar_troca")
+
+    assert 'id="aviso-eu"' in html and AVISO_EU in texto(html)
+    # "Fui eu" e o padrao: o script mostra o aviso novo e esconde o antigo.
+    assert re.search(r'<div id="aviso-eu" hidden>', html)
+    assert AVISO_OUTRA in texto(html)  # texto antigo intacto
+    assert 'id="aviso-outra"' in html and 'id="aviso-outra" hidden' not in html
+
+
+def test_pessoa_da_vez_nao_tem_aviso_novo(client, equipe):
+    html = tela(client, equipe[0], "registrar_troca")
+
+    assert 'id="aviso-eu"' not in html
+    assert "Você não é a pessoa da vez" not in html
+    assert AVISO_OUTRA in texto(html)  # sem JS segue visivel, como hoje
+
+
+def test_aviso_antigo_fica_fora_do_bloco_do_seletor(client, equipe):
+    html = tela(client, equipe[1], "registrar_troca")
+
+    bloco = html.split('id="bloco-outra-pessoa"')[1].split('id="aviso-outra"')[0]
+    assert "dever 1 troca" not in bloco
+    assert 'name="executor"' in bloco

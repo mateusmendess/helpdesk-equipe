@@ -43,17 +43,27 @@
     </fieldset>
 
     {# Visivel no HTML; o script abaixo esconde quando "Fui eu" esta marcado. #}
-    <div id="bloco-outra-pessoa" class="space-y-3">
-      <div>
-        <label for="{{ form.executor.id_for_label }}" class="block text-[15px] font-semibold">{{ form.executor.label }}</label>
-        {{ form.executor }}
-        {% for erro in form.executor.errors %}<p class="mt-1 text-sm text-erro">{{ erro }}</p>{% endfor %}
-      </div>
+    <div id="bloco-outra-pessoa">
+      <label for="{{ form.executor.id_for_label }}" class="block text-[15px] font-semibold">{{ form.executor.label }}</label>
+      {{ form.executor }}
+      {% for erro in form.executor.errors %}<p class="mt-1 text-sm text-erro">{{ erro }}</p>{% endfor %}
+    </div>
+
+    {# Sem JS, o aviso com o texto atual fica visivel. O script mostra o aviso certo para cada escolha. #}
+    <div id="aviso-outra">
       <div class="flex items-start gap-2 rounded-[10px] border border-[#e3b878] bg-aviso-fundo px-3 py-2.5 text-sm text-aviso">
         <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.1" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
         <p class="min-w-0 wrap-anywhere">Se quem trocou não for {{ vez.first_name|default:vez.email }}, a vez de {{ vez.first_name|default:vez.email }} conta como cumprida e essa pessoa passa a dever 1 troca. Quem trocou no lugar dela abate 1 da própria dívida, se tiver.</p>
       </div>
     </div>
+    {% if vez.pk != user.pk %}
+      <div id="aviso-eu" hidden>
+        <div class="flex items-start gap-2 rounded-[10px] border border-[#e3b878] bg-aviso-fundo px-3 py-2.5 text-sm text-aviso">
+          <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.1" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <p class="min-w-0 wrap-anywhere">Você não é a pessoa da vez. A vez de {{ vez.first_name|default:vez.email }} conta como cumprida e essa pessoa passa a dever 1 troca. Você abate 1 da sua própria dívida, se tiver.</p>
+        </div>
+      </div>
+    {% endif %}
 
     <div>
       <label for="{{ form.observacao.id_for_label }}" class="block text-[15px] font-semibold">{{ form.observacao.label }}</label>
@@ -73,13 +83,19 @@
 </main>
 
 <script>
-  // Melhoria progressiva: sem este script, a lista e o aviso ficam visiveis.
+  // Melhoria progressiva: sem este script, a lista e o aviso (texto atual) ficam visiveis.
   (function () {
     var bloco = document.getElementById("bloco-outra-pessoa");
+    var avisoOutra = document.getElementById("aviso-outra");
+    var avisoEu = document.getElementById("aviso-eu"); // so existe se quem logou nao e a da vez
     var opcoes = document.querySelectorAll('input[name="quem"]');
     function atualizar() {
       var marcada = document.querySelector('input[name="quem"]:checked');
-      bloco.hidden = !marcada || marcada.value !== "outra";
+      var outra = Boolean(marcada) && marcada.value === "outra";
+      var eu = Boolean(marcada) && marcada.value === "eu";
+      bloco.hidden = !outra;
+      avisoOutra.hidden = !outra;
+      if (avisoEu) { avisoEu.hidden = !eu; }
     }
     opcoes.forEach(function (opcao) { opcao.addEventListener("change", atualizar); });
     window.addEventListener("pageshow", atualizar);
