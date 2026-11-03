@@ -58,10 +58,12 @@ python manage.py runserver
 Abra http://127.0.0.1:8000 e entre com o e-mail (ou a matrícula) e a senha. Contas novas de verdade
 são cadastradas só pelo admin, em http://127.0.0.1:8000/admin/.
 
-Limite de tentativas: 5 senhas erradas para a mesma pessoa em 15 minutos, somando as
-feitas pelo e-mail e pela matrícula, bloqueiam essa pessoa automaticamente (em /entrar/
-e no /admin/), e o bloqueio acaba sozinho.
-Os valores ficam em `config/settings.py` (`LOGIN_MAX_TENTATIVAS` e `LOGIN_JANELA_MINUTOS`).
+Limite de tentativas (em /entrar/ e no /admin/): com 5 senhas erradas para a mesma pessoa
+na última hora, somando as feitas pelo e-mail e pela matrícula, ela espera 1 minuto; cada erro
+novo dobra a espera (2, 4, 8 min), até no máximo 15 minutos. Uma hora sem erros ou a senha
+certa zeram a contagem. Além disso, 20 erros do mesmo IP em 15 minutos bloqueiam esse IP.
+O admin pode liberar alguém na hora: ação "Liberar entrada" na lista de usuários.
+Os valores ficam em `config/settings.py` (os `LOGIN_...`).
 
 Senhas: cada pessoa troca a própria senha em "Trocar senha", na tela inicial.
 O admin cria a senha provisória no /admin/; usuário novo vem marcado para trocar no primeiro acesso.

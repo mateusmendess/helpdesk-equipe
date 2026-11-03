@@ -121,6 +121,8 @@ class FalhaLogin(models.Model):
     # Sem chave estrangeira: conta tambem e-mails que nao sao de ninguem.
     email = models.CharField("e-mail", max_length=254, db_index=True)
     criada_em = models.DateTimeField("criada em", default=timezone.now, db_index=True)
+    # IP de onde veio a tentativa; vazio quando nao ha pedido (ex.: shell).
+    ip = models.GenericIPAddressField("IP", null=True, blank=True, db_index=True)
 
     class Meta:
         verbose_name = "falha de login"

@@ -66,7 +66,7 @@ No /admin/, o mixin `MensagensNoFeminino` (em `fila/admin.py`) põe no feminino 
 - **Entrar:** `/entrar/` tem um campo só, "E-mail ou matrícula", e a senha. Se o texto (sem espaços nas pontas) tem só dígitos, é buscado como matrícula (texto exato: "0123" e "123" são diferentes); senão, como e-mail (sem diferença entre maiúsculas e minúsculas). O `/admin/login/` usa o mesmo campo e a mesma mensagem.
 - **Matrícula:** opcional, só dígitos, guardada como texto, única por pessoa. Quem ainda não tem matrícula entra pelo e-mail.
 - **Mensagem única:** "E-mail, matrícula ou senha incorretos." Ela não diz se a matrícula ou o e-mail existe. Usuário inativo não entra.
-- **Bloqueio:** 5 senhas erradas em 15 minutos bloqueiam a pessoa (valores em `config/settings.py`: `LOGIN_MAX_TENTATIVAS` e `LOGIN_JANELA_MINUTOS`). A matrícula e o e-mail da mesma pessoa contam juntos: a falha é guardada com o e-mail dela; se o texto digitado não é de ninguém, guarda o texto em minúsculas. No bloqueio nem a senha certa entra; o sucesso zera a contagem e o bloqueio acaba sozinho.
+- **Bloqueio:** com n senhas erradas para a pessoa na última hora (n >= 5), ela espera 1 min x 2^(n-5), no máximo 15 min, contados do último erro (5 erros = 1 min, 6 = 2, 7 = 4, 8 = 8, 9 ou mais = 15); e 20 erros do mesmo IP em 15 minutos bloqueiam o IP para qualquer conta (o IP vem do X-Real-IP do Railway só em produção). Valores em `config/settings.py` (`LOGIN_...`). A matrícula e o e-mail da mesma pessoa contam juntos: a falha é guardada com o e-mail dela; se o texto digitado não é de ninguém, guarda o texto em minúsculas. Na espera nem a senha certa entra e a tentativa não conta; o sucesso zera a contagem; o admin libera na hora pela ação "Liberar entrada" da lista de usuários.
 - **Troca de senha obrigatória:** a conta criada pelo admin vem com senha provisória e, no primeiro acesso, só abre "Trocar senha" (e Sair). Quando o admin redefine a senha de outra pessoa, vale de novo. Não existe "esqueci a senha": quem esquece fala com um admin.
 - **Sem cache:** as telas de quem está logado saem com cabeçalhos de "não guardar" (`core/middleware.py`), para o botão "voltar" não mostrar a tela antiga depois de sair. A página pública, o `/saude/` e os arquivos estáticos não mudam.
 - **Acesso:** login individual. Admins: o Mateus e quem ele indicar. Só admins cadastram pessoas, registram ausências, corrigem registros do galão e configuram a escala. Os demais consultam e registram trocas do galão pelo botão, inclusive cobertura, e trocam sábados seus.
@@ -84,8 +84,8 @@ No /admin/, o mixin `MensagensNoFeminino` (em `fila/admin.py`) põe no feminino 
 - Admin do sistema = `is_staff` e `is_superuser` ligados; membro = os dois desligados; `is_active` = ainda faz parte do time
 
 ### FalhaLogin
-- `email` (texto: o e-mail da pessoa ou, se o texto digitado não é de ninguém, o texto em minúsculas; sem chave estrangeira) e `criada_em`
-- Uma linha por senha errada; as que passam da janela de 15 minutos são apagadas na próxima falha registrada, e o login com sucesso apaga as da pessoa
+- `email` (texto: o e-mail da pessoa ou, se o texto digitado não é de ninguém, o texto em minúsculas; sem chave estrangeira), `criada_em` e `ip` (de onde veio a tentativa; vazio sem pedido)
+- Uma linha por senha errada; as com mais de 60 minutos são apagadas na próxima falha registrada, e o login com sucesso (ou a ação "Liberar entrada" do admin) apaga as da pessoa
 
 ### Rodada
 - `numero` (1, 2, 3...; único), `aberta_em`, `fechada_em` (vazio = rodada atual)

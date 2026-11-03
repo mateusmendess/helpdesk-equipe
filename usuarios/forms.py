@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (
 )
 from django.core.exceptions import ValidationError
 
-from .limite import esta_bloqueado
+from .limite import esta_bloqueado, ip_do_pedido
 from .models import Usuario
 
 
@@ -37,7 +37,19 @@ class UsuarioAlteracaoForm(UserChangeForm):
         fields = "__all__"
 
 
-class EntrarForm(AuthenticationForm):
+class ChecaEsperaMixin:
+    """Mostra a mensagem de espera do limite de tentativas (/entrar/ e /admin/)."""
+
+    def clean(self):
+        # Checa o bloqueio antes de conferir a senha: com a pessoa bloqueada,
+        # nem a senha certa entra, e a tentativa nao e registrada.
+        identificador = self.cleaned_data.get("username")
+        if identificador and esta_bloqueado(identificador, ip_do_pedido(self.request)):
+            raise ValidationError(self.error_messages["bloqueado"], code="bloqueado")
+        return super().clean()
+
+
+class EntrarForm(ChecaEsperaMixin, AuthenticationForm):
     """Login por matricula ou e-mail, com uma so mensagem de erro."""
 
     error_messages = {
@@ -46,21 +58,14 @@ class EntrarForm(AuthenticationForm):
         "bloqueado": "Muitas tentativas de entrada. Tente de novo em alguns minutos.",
     }
 
-    def clean(self):
-        # Checa o bloqueio antes de conferir a senha: com a pessoa bloqueada,
-        # nem a senha certa entra, e a tentativa nao e registrada.
-        identificador = self.cleaned_data.get("username")
-        if identificador and esta_bloqueado(identificador):
-            raise ValidationError(self.error_messages["bloqueado"], code="bloqueado")
-        return super().clean()
 
-
-class EntrarPainelForm(AdminAuthenticationForm):
-    """Login do /admin/: mesmo rotulo e mesma mensagem de erro do /entrar/."""
+class EntrarPainelForm(ChecaEsperaMixin, AdminAuthenticationForm):
+    """Login do /admin/: mesmo rotulo e mesmas mensagens de erro do /entrar/."""
 
     error_messages = {
         **AdminAuthenticationForm.error_messages,
         "invalid_login": EntrarForm.error_messages["invalid_login"],
+        "bloqueado": EntrarForm.error_messages["bloqueado"],
     }
 
     def __init__(self, *args, **kwargs):
