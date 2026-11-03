@@ -27,7 +27,7 @@ GIT, CI E PULL REQUEST (projeto solo com pipeline)
 
 TESTES (politica para economizar tempo sem deixar buraco)
 - Logica e seguranca: teste SIM. Para testes novos de logica/seguranca, mostre a prova "falha antes / passa depois" (stash so do codigo de producao).
-- Durante o trabalho rode so os testes do assunto; a suite completa UMA vez no fim, antes do push (o CI roda de novo no PR).
+- Durante o trabalho rode so os testes do assunto; a suite completa UMA vez no fim, antes do push (o CI roda de novo no PR). Excecao: se o pedido disser "so os testes do assunto" (complemento pequeno), rode so esses e deixe a suite completa para o CI.
 - Mudanca so de texto ou visual: teste so onde ha logica; o resto voce confere na verificacao local, comparando antes e depois.
 - PR so de testes: prove que os testes pegam defeito com 3 mutacoes manuais (quebra temporaria do codigo, ver o teste falhar, desfazer e confirmar git status limpo).
 - Sempre informe a contagem de testes (anteriores + novos) e explique a conta.
@@ -57,7 +57,7 @@ RELATORIO FINAL (vai para o RELATORIO.md na raiz, que voce SOBRESCREVE a cada ta
 3. O que mudou, item por item, em "antes | depois".
 4. Testes: contagem (anteriores + novos), resultado do pytest e do ruff, e as provas "falha antes / passa depois".
 5. Verificacao local: o que foi conferido e, quando houver tela nova, os comandos exatos para o Mateus ver o resultado.
-6. Achados fora do escopo (liste, nao corrija).
+6. Achados fora do escopo (liste, nao corrija). Inclui: se sua mudanca altera regra de negocio, modelo de dados, modulo ou estrutura de pastas e o pedido nao mandou atualizar o estrutura.md, reporte aqui e sugira o texto; nao edite por conta propria.
 7. Correcoes suas no meio do caminho, com honestidade (ex.: "meu script trocou o fim de linha; refiz").
 8. Modelo usado / foi suficiente?
 Termine o RELATORIO.md com: "Aguardo sua conferencia antes do merge." No chat, ao final, escreva so UMA frase com o link do PR e o aviso de que o RELATORIO.md foi atualizado.
