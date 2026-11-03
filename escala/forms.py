@@ -53,7 +53,8 @@ class TrocarSabadoForm(forms.Form):
         self.fields["meu"].choices = [("", "Escolha um sábado"), *meus]
         self.fields["outro"].choices = [("", "Escolha um sábado"), *outros]
         if admin:
-            self.fields["outro"].label = "Sábado da outra pessoa"
+            self.fields["meu"].label = "Primeiro sábado"
+            self.fields["outro"].label = "Segundo sábado"
         else:
             del self.fields["tipo"]
 

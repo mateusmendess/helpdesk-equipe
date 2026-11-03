@@ -45,7 +45,7 @@
 
   {# Fila: no computador fica na coluna da direita, ocupando as duas linhas. #}
   {% if posicoes %}
-    <section class="mt-6 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-0" aria-labelledby="titulo-fila">
+    <section data-cartao="fila" class="mt-6 rounded-[14px] border border-borda bg-white p-4 text-texto md:col-start-2 md:row-span-2 md:row-start-1 md:mt-0" aria-labelledby="titulo-fila">
       <h2 id="titulo-fila" class="text-[15px] font-bold">Fila</h2>
       <ol class="mt-2">
         {% for posicao, devendo, ausente_ate in linhas %}

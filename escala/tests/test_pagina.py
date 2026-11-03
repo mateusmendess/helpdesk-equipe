@@ -17,6 +17,8 @@ def texto_do_cartao(client, usuario):
     assert resposta.status_code == 200
     html = resposta.content.decode()
     corpo = html[html.index("<main") : html.index("</main>")]
+    # A saudacao "Ola, <nome>" (pedido 44b) fica de fora: estes testes olham os cartoes.
+    corpo = re.sub(r"<p[^>]*>Olá, .*?</p>", "", corpo, count=1)
     return " ".join(re.sub(r"<[^>]+>", " ", corpo).split())
 
 
@@ -104,3 +106,19 @@ def test_um_cartao_sem_botao_nem_link(client, membro, hoje):
     assert "<a " not in corpo and "<button" not in corpo and "<form" not in corpo
     # O <h1> e o do cabecalho (marca_p nao).
     assert re.findall(r"<h1\b[^>]*>(.*?)</h1>", html) == ["Help Desk Equipe"]
+
+
+def test_ola_com_nome_ou_email_como_no_inicio(client, configurada, django_user_model):
+    com_nome = django_user_model.objects.create_user(
+        email="pessoa5@exemplo.test", first_name="Pessoa 5"
+    )
+    sem_nome = django_user_model.objects.create_user(email="pessoa6@exemplo.test")
+
+    for usuario, esperado in (
+        (com_nome, "Olá, Pessoa 5"),
+        (sem_nome, "Olá, pessoa6@exemplo.test"),
+    ):
+        client.force_login(usuario)
+        html = client.get(reverse("escala")).content.decode()
+        assert f">{esperado}</p>" in html
+        assert html.index(esperado) < html.index("Próximo sábado")
