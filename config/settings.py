@@ -105,12 +105,21 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
-# Limite de tentativas de login: com LOGIN_MAX_TENTATIVAS senhas erradas para a
-# mesma pessoa (pelo e-mail ou pela matricula) nos ultimos LOGIN_JANELA_MINUTOS
-# minutos, a pessoa fica bloqueada.
+# Limite de tentativas de login (usuarios/limite.py).
+# Por conta (e-mail e matricula da mesma pessoa contam juntos): com n senhas
+# erradas nos ultimos LOGIN_JANELA_CONTA_MINUTOS, se n >= LOGIN_MAX_TENTATIVAS a
+# pessoa espera LOGIN_ESPERA_INICIAL_MINUTOS x 2^(n - LOGIN_MAX_TENTATIVAS), no
+# maximo LOGIN_ESPERA_MAXIMA_MINUTOS, contados do ultimo erro.
+# Por IP: LOGIN_MAX_POR_IP erros do mesmo IP nos ultimos LOGIN_JANELA_IP_MINUTOS
+# bloqueiam esse IP para qualquer conta. O IP vem do X-Real-IP so em producao.
 AUTHENTICATION_BACKENDS = ["usuarios.backends.LimiteTentativasBackend"]
 LOGIN_MAX_TENTATIVAS = 5
-LOGIN_JANELA_MINUTOS = 15
+LOGIN_JANELA_CONTA_MINUTOS = 60
+LOGIN_ESPERA_INICIAL_MINUTOS = 1
+LOGIN_ESPERA_MAXIMA_MINUTOS = 15
+LOGIN_MAX_POR_IP = 20
+LOGIN_JANELA_IP_MINUTOS = 15
+LOGIN_IP_DO_CABECALHO = HTTPS_SEGURO
 
 AUTH_PASSWORD_VALIDATORS = [
     {

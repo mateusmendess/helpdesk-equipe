@@ -33,7 +33,7 @@ def errar(client, email, vezes):
 
 def falhas_antigas(email, quantidade):
     antes_da_janela = timezone.now() - timedelta(
-        minutes=settings.LOGIN_JANELA_MINUTOS + 1
+        minutes=settings.LOGIN_JANELA_CONTA_MINUTOS + 1
     )
     for _ in range(quantidade):
         FalhaLogin.objects.create(email=email, criada_em=antes_da_janela)
@@ -77,7 +77,7 @@ def test_bloqueio_acaba_quando_as_falhas_saem_da_janela(client, membro):
     )
 
     antes_da_janela = timezone.now() - timedelta(
-        minutes=settings.LOGIN_JANELA_MINUTOS + 1
+        minutes=settings.LOGIN_JANELA_CONTA_MINUTOS + 1
     )
     FalhaLogin.objects.update(criada_em=antes_da_janela)
 

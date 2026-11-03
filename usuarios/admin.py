@@ -4,7 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.db.models import F
 
 from .forms import UsuarioAlteracaoForm, UsuarioCriacaoForm
-from .models import Usuario
+from .limite import normalizar_email
+from .models import FalhaLogin, Usuario
 
 
 @admin.register(Usuario)
@@ -25,6 +26,7 @@ class UsuarioAdmin(UserAdmin):
     search_fields = ("email", "matricula", "first_name", "last_name")
     # Quem esta na fila primeiro (1, 2, 3...), quem esta sem ordem por ultimo.
     ordering = (F("ordem").asc(nulls_last=True), "email")
+    actions = ["liberar_entrada"]
 
     fieldsets = (
         (None, {"fields": ("email", "matricula", "password", "precisa_trocar_senha")}),
@@ -78,6 +80,20 @@ class UsuarioAdmin(UserAdmin):
                 depois.precisa_trocar_senha = True
                 depois.save(update_fields=["precisa_trocar_senha"])
         return resposta
+
+    @admin.action(
+        description="Liberar entrada (apagar tentativas erradas)",
+        permissions=["change"],
+    )
+    def liberar_entrada(self, request, queryset):
+        # As falhas ficam pelo e-mail da pessoa (de qualquer IP e tambem as
+        # feitas pela matricula), entao apagar pelo e-mail libera tudo.
+        emails = {
+            normalizar_email(email)
+            for email in queryset.values_list("email", flat=True)
+        }
+        FalhaLogin.objects.filter(email__in=emails).delete()
+        self.message_user(request, f"Entrada liberada para {len(emails)} pessoa(s).")
 
     @admin.display(boolean=True, description="admin")
     def eh_admin(self, obj):

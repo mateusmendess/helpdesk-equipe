@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.exceptions import PermissionDenied
 
-from .limite import esta_bloqueado
+from .limite import esta_bloqueado, ip_do_pedido
 
 
 class LimiteTentativasBackend(ModelBackend):
@@ -16,7 +16,7 @@ class LimiteTentativasBackend(ModelBackend):
         identificador = username
         if identificador is None:
             identificador = kwargs.get(Usuario.USERNAME_FIELD)
-        if identificador and esta_bloqueado(identificador):
+        if identificador and esta_bloqueado(identificador, ip_do_pedido(request)):
             # authenticate() para nos backends e envia user_login_failed.
             raise PermissionDenied
         if identificador:

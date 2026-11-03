@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (
 )
 from django.core.exceptions import ValidationError
 
-from .limite import esta_bloqueado
+from .limite import esta_bloqueado, ip_do_pedido
 from .models import Usuario
 
 
@@ -50,7 +50,7 @@ class EntrarForm(AuthenticationForm):
         # Checa o bloqueio antes de conferir a senha: com a pessoa bloqueada,
         # nem a senha certa entra, e a tentativa nao e registrada.
         identificador = self.cleaned_data.get("username")
-        if identificador and esta_bloqueado(identificador):
+        if identificador and esta_bloqueado(identificador, ip_do_pedido(self.request)):
             raise ValidationError(self.error_messages["bloqueado"], code="bloqueado")
         return super().clean()
 
