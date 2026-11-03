@@ -197,6 +197,7 @@ def test_estado_configuracao_invalida(client, ligada):
     html = pagina(client, ligada[1])
 
     assert texto(html) == (
+        "Olá, Pessoa 2 "
         "O primeiro da fila da configuração não está na escala (está inativo "
         "ou sem posição na escala). Peça a um admin para ajustar em Painel de "
         "administração &gt; Escala de sábado."
