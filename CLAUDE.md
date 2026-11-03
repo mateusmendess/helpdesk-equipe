@@ -27,7 +27,7 @@ GIT, CI E PULL REQUEST (projeto solo com pipeline)
 
 TESTES (politica para economizar tempo sem deixar buraco)
 - Logica e seguranca: teste SIM. Para testes novos de logica/seguranca, mostre a prova "falha antes / passa depois" (stash so do codigo de producao).
-- Durante o trabalho rode so os testes do assunto; a suite completa UMA vez no fim, antes do push (o CI roda de novo no PR). Excecao: se o pedido disser "so os testes do assunto" (complemento pequeno), rode so esses e deixe a suite completa para o CI.
+- Durante o trabalho rode so os testes do assunto; a suite completa UMA vez no fim, antes do push (o CI roda de novo no PR). Excecao: se o pedido disser "todos os testes do app tocado" (complemento pequeno), rode esses, e nao so os arquivos de teste que parecem do assunto, e deixe a suite completa para o CI.
 - Mudanca so de texto ou visual: teste so onde ha logica; o resto voce confere na verificacao local, comparando antes e depois.
 - PR so de testes: prove que os testes pegam defeito com 3 mutacoes manuais (quebra temporaria do codigo, ver o teste falhar, desfazer e confirmar git status limpo).
 - Sempre informe a contagem de testes (anteriores + novos) e explique a conta.
