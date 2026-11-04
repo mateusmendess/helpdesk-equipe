@@ -84,3 +84,17 @@ def test_titulo_novo_e_sem_os_textos_antigos(client):
     assert TITULO in html
     assert "grupo" not in html and "Cada um na sua vez" not in html
     assert "ver a sua vez e a escala." in html
+
+
+def test_desenho_da_equipe_em_tres_camadas_sem_a_legenda_antiga(client):
+    html = publica(client)
+    # A pagina inteira nao fala de divida; o desenho vai do aria-hidden a legenda unica.
+    desenho = html[
+        html.index('<div aria-hidden="true">') : html.index("tudo no mesmo lugar")
+    ]
+
+    for pilula in (">Galão<", ">Sábado<", ">Ausências<"):
+        assert pilula in desenho
+    assert "tudo no mesmo lugar" in html
+    assert "Carla estava ausente" not in html
+    assert not re.search(r"d[ií]vida|devendo", html, re.IGNORECASE)

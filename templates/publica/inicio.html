@@ -30,27 +30,29 @@
         </div>
       </div>
 
-      {# Painel da equipe (decorativo, nomes ficticios, data fixa). O cartao do galao troca de nome #}
-      {# em 12s: as 3 copias ficam na mesma celula da grade (altura reservada) e so a opacidade muda. #}
-      {# Sem movimento: fica parado em Bruno. O desenho e aria-hidden; a legenda abaixo e lida normalmente. #}
-      <div>
-        <div aria-hidden="true">
-          {% with copia="col-start-1 row-start-1 animate-[vez-troca_12s_infinite] motion-reduce:animate-none" %}
-          <div class="mb-3 rounded-[14px] bg-white px-[18px] py-4 text-tinta">
-            <p class="mb-1.5 text-[13px] text-texto-suave">Galão · vez de</p>
-            <div class="grid">
-              <div class="{{ copia }} opacity-100"><div class="flex items-center gap-2.5 text-[22px] font-bold"><span class="grid h-9 w-9 place-items-center rounded-full bg-tinta text-[15px] text-white">B</span>Bruno</div><p class="mt-2 text-[13px] text-texto-suave">Depois: Diego, Ana</p></div>
-              <div class="{{ copia }} [animation-delay:-8s] opacity-0 motion-reduce:invisible"><div class="flex items-center gap-2.5 text-[22px] font-bold"><span class="grid h-9 w-9 place-items-center rounded-full bg-tinta text-[15px] text-white">D</span>Diego</div><p class="mt-2 text-[13px] text-texto-suave">Depois: Ana, Bruno</p></div>
-              <div class="{{ copia }} [animation-delay:-4s] opacity-0 motion-reduce:invisible"><div class="flex items-center gap-2.5 text-[22px] font-bold"><span class="grid h-9 w-9 place-items-center rounded-full bg-tinta text-[15px] text-white">A</span>Ana</div><p class="mt-2 text-[13px] text-texto-suave">Depois: Bruno, Diego</p></div>
-            </div>
-          </div>
-          {% endwith %}
-          <div class="mb-3 rounded-[14px] bg-white px-[18px] py-4 text-tinta">
-            <p class="mb-1.5 text-[13px] text-texto-suave">Sábado · 05/12</p>
-            <div class="flex gap-[18px] text-base"><span><b>Manhã</b> Ana</span><span><b>Tarde</b> Diego</span></div>
-          </div>
+      {# Desenho "a equipe em tres camadas" (decorativo, nomes e datas ficticios e fixos).      #}
+      {# Ciclo de 12s: 3 cenas (galao, sabado, ausencias) trocam so por opacidade, todas na      #}
+      {# MESMA celula da grade (altura reservada). Sem movimento: etiquetas empilhadas e legenda unica. #}
+      <div aria-hidden="true">
+        {% with pil="rounded-full border border-white/40 px-2.5 py-[3px] text-xs text-[#d6ebf3]" cena="col-start-1 row-start-1 opacity-0 motion-reduce:animate-none motion-reduce:opacity-100" etq="inline-block rounded-lg bg-white px-[7px] py-px font-semibold text-tinta" %}
+        <div class="mb-3 flex justify-center gap-1.5">
+          <span class="{{ pil }} animate-[pil-1_12s_infinite] motion-reduce:animate-none">Galão</span>
+          <span class="{{ pil }} animate-[pil-2_12s_infinite] motion-reduce:animate-none">Sábado</span>
+          <span class="{{ pil }} animate-[pil-3_12s_infinite] motion-reduce:animate-none">Ausências</span>
         </div>
-        <p class="mt-4 max-w-[44ch] text-[15px] text-[#d6ebf3]"><b class="text-white">Carla estava ausente na vez dela.</b> A vez pulou para o Diego e segue em frente. Ela volta na próxima rodada, sem dívida.</p>
+        <div class="mx-auto grid max-w-[380px] grid-cols-4 gap-1 text-center text-xs text-[#d6ebf3]">
+          <div class="flex flex-col items-center"><span class="relative grid h-[42px] w-[42px] place-items-center rounded-full bg-white/15 text-[15px] font-semibold text-white">A<span class="absolute -inset-1 rounded-full border-[2.5px] border-white opacity-0 animate-[cena-2_12s_infinite] motion-reduce:animate-none"></span></span><span class="mt-[5px] mb-1.5 text-white">Ana</span><span class="grid w-full motion-reduce:flex motion-reduce:flex-col motion-reduce:gap-0.5 h-9 motion-reduce:h-auto"><span class="{{ cena }} animate-[cena-1_12s_infinite]">já trocou</span><span class="{{ cena }} animate-[cena-2_12s_infinite]"><b class="{{ etq }}">Manhã</b><br>05/12</span><span class="{{ cena }} animate-[cena-3_12s_infinite]">disponível</span></span></div>
+          <div class="flex flex-col items-center"><span class="relative grid h-[42px] w-[42px] place-items-center rounded-full bg-white/15 text-[15px] font-semibold text-white">B<span class="absolute -inset-1 rounded-full border-[2.5px] border-white opacity-0 animate-[cena-1_12s_infinite] motion-reduce:animate-none"></span></span><span class="mt-[5px] mb-1.5 text-white">Bruno</span><span class="grid w-full motion-reduce:flex motion-reduce:flex-col motion-reduce:gap-0.5 h-9 motion-reduce:h-auto"><span class="{{ cena }} animate-[cena-1_12s_infinite]"><b class="{{ etq }}">vez agora</b></span><span class="{{ cena }} animate-[cena-2_12s_infinite]">12/12</span><span class="{{ cena }} animate-[cena-3_12s_infinite]">disponível</span></span></div>
+          <div class="flex flex-col items-center"><span class="relative grid h-[42px] w-[42px] place-items-center rounded-full bg-white/15 text-[15px] font-semibold text-white">C<span class="absolute -inset-[1.5px] rounded-full border-[1.5px] border-dashed border-[#d6ebf3] animate-[tracejado_12s_infinite] motion-reduce:animate-none"></span></span><span class="mt-[5px] mb-1.5 text-white">Carla</span><span class="grid w-full motion-reduce:flex motion-reduce:flex-col motion-reduce:gap-0.5 h-9 motion-reduce:h-auto"><span class="{{ cena }} animate-[cena-1_12s_infinite]">ausente</span><span class="{{ cena }} animate-[cena-2_12s_infinite]">19/12</span><span class="{{ cena }} animate-[cena-3_12s_infinite]"><b class="{{ etq }}">ausente</b></span></span></div>
+          <div class="flex flex-col items-center"><span class="relative grid h-[42px] w-[42px] place-items-center rounded-full bg-white/15 text-[15px] font-semibold text-white">D<span class="absolute -inset-1 rounded-full border-[2.5px] border-white opacity-0 animate-[cena-2_12s_infinite] motion-reduce:animate-none"></span></span><span class="mt-[5px] mb-1.5 text-white">Diego</span><span class="grid w-full motion-reduce:flex motion-reduce:flex-col motion-reduce:gap-0.5 h-9 motion-reduce:h-auto"><span class="{{ cena }} animate-[cena-1_12s_infinite]">próximo</span><span class="{{ cena }} animate-[cena-2_12s_infinite]"><b class="{{ etq }}">Tarde</b><br>05/12</span><span class="{{ cena }} animate-[cena-3_12s_infinite]">disponível</span></span></div>
+        </div>
+        <div class="mt-2.5 grid h-9 text-center text-[13px] leading-[1.35] text-[#d6ebf3] motion-reduce:hidden">
+          <p class="{{ cena }} animate-[cena-1_12s_infinite]">A vez do galão, sempre para a frente.</p>
+          <p class="{{ cena }} animate-[cena-2_12s_infinite]">A escala de sábado, em rodízio.</p>
+          <p class="{{ cena }} animate-[cena-3_12s_infinite]">Ausências registradas: a vez segue com quem está presente.</p>
+        </div>
+        <p class="mt-2.5 hidden text-center text-[13px] leading-[1.35] text-[#d6ebf3] motion-reduce:block">Galão, escala de sábado e ausências da equipe, tudo no mesmo lugar.</p>
+        {% endwith %}
       </div>
     </div>
   </div>
