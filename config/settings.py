@@ -25,6 +25,8 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 # Origens https aceitas no CSRF (ex.: https://meu-app.up.railway.app).
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+# Pagina mostrada quando a verificacao CSRF recusa um formulario (403).
+CSRF_FAILURE_VIEW = "core.views.csrf_falhou"
 
 # Producao atras do proxy HTTPS do Railway. False no computador e no CI:
 # nesse caso nada abaixo e alterado.

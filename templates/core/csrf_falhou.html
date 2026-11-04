@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Página desatualizada · Help Desk Equipe{% endblock %}
+
+{% block content %}
+{# Mesmo cartao centralizado da tela de entrar, sem formulario. #}
+<main class="flex min-h-screen flex-col items-center justify-center px-4 py-10 supports-[min-height:100dvh]:min-h-dvh">
+  <div class="w-full max-w-md text-center">
+    {% include "_logo.html" with classe="mx-auto h-16 w-16 text-tinta" %}
+    <p class="mt-2 mb-[18px] text-[28px] leading-tight font-extrabold">Help Desk Equipe</p>
+  </div>
+  <section class="w-full max-w-md rounded-[14px] border border-borda bg-white px-4 py-5">
+    <h1 class="mb-2 text-lg font-bold">Esta página ficou desatualizada</h1>
+    <p class="mb-4 text-[15px] text-texto-suave">Isso acontece quando a tela fica aberta por muito tempo ou em duas abas. Não é nada grave. Volte e tente de novo.</p>
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'home' %}" class="flex min-h-[52px] w-full items-center justify-center rounded-[10px] bg-tinta px-4 text-[17px] font-bold text-white hover:bg-[#093f57]">Voltar ao início</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="flex min-h-[52px] w-full items-center justify-center rounded-[10px] bg-tinta px-4 text-[17px] font-bold text-white hover:bg-[#093f57]">Voltar para a entrada</a>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}
