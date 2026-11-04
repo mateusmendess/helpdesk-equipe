@@ -5,6 +5,8 @@ from django.urls import reverse
 
 pytestmark = pytest.mark.django_db
 
+TITULO = "Quem faz o quê, sem precisar perguntar."
+
 
 def publica(client):
     resposta = client.get(reverse("home"))
@@ -15,7 +17,7 @@ def publica(client):
 def test_anonimo_ve_o_titulo_e_os_botoes_entrar(client):
     html = publica(client)
 
-    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html) == ["Cada um na sua vez."]
+    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html) == [TITULO]
     entrar = re.findall(r'<a href="([^"]+)"[^>]*>Entrar</a>', html)
     assert entrar == [reverse("login")] * 3
     assert "<title>Help Desk Equipe</title>" in html
@@ -71,6 +73,14 @@ def test_sem_o_bloco_do_proximo_modulo_e_com_os_dois_modulos(client):
     html = publica(client)
 
     assert "O próximo módulo cabe aqui" not in html and "cabe aqui" not in html
-    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html) == ["Cada um na sua vez."]
+    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html) == [TITULO]
     modulos = re.findall(r"<h3[^>]*>(.*?)</h3>", html)
     assert modulos == ["Galão", "Escala de sábado"]
+
+
+def test_titulo_novo_e_sem_os_textos_antigos(client):
+    html = publica(client)
+
+    assert TITULO in html
+    assert "grupo" not in html and "Cada um na sua vez" not in html
+    assert "ver a sua vez e a escala." in html

@@ -55,13 +55,10 @@ def test_marca_e_a_logo_nova(client, membro, nome, logado, cor):
     assert LOGO in trecho and GALAO not in trecho
 
 
-def test_galao_so_fica_como_modulo_na_pagina_publica(client, membro):
+def test_galao_nao_aparece_na_entrada_nem_no_inicio_logado(client, membro):
     publica = html_de(client, "home")
     entrada = html_de(client, "login")
     galao = html_de(client, "home", membro)
 
-    # Na pagina publica o galao e so o marcador que anda na fila.
-    assert publica.count(GALAO) == 1
-    jarro = r'fila-anda[^>]*>\s*<svg class="h-8 w-7"[^>]*><path d="'
-    assert re.search(jarro + GALAO, publica)
-    assert GALAO not in entrada and GALAO not in galao
+    # O desenho do topo da pagina publica agora e o painel da equipe (sem o jarro).
+    assert GALAO not in publica and GALAO not in entrada and GALAO not in galao
