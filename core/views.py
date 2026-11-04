@@ -1,5 +1,9 @@
+import logging
+
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_safe
 
 from fila.models import Troca
@@ -13,6 +17,8 @@ from fila.regras import (
     situacao_da_fila,
 )
 from fila.views import descrever
+
+logger = logging.getLogger("core.csrf")
 
 
 @require_safe
@@ -61,3 +67,22 @@ def home(request):
 def saude(request):
     # Healthcheck do Railway: sem login, sem banco, so GET/HEAD.
     return HttpResponse("ok", content_type="text/plain")
+
+
+@never_cache
+def csrf_falhou(request, reason=""):
+    """Tela amigavel quando o Django recusa um formulario (verificacao CSRF).
+
+    A protecao nao muda: a recusa (403) continua e nada e gravado. So trocamos
+    a pagina amarela padrao e registramos o MOTIVO, sem dado pessoal: so
+    metodo, caminho e se vieram os cookies (nunca o valor deles).
+    """
+    logger.warning(
+        "csrf_falhou motivo=%s metodo=%s caminho=%s cookie_csrf=%s cookie_sessao=%s",
+        reason,
+        request.method,
+        request.path,
+        settings.CSRF_COOKIE_NAME in request.COOKIES,
+        settings.SESSION_COOKIE_NAME in request.COOKIES,
+    )
+    return render(request, "core/csrf_falhou.html", status=403)
