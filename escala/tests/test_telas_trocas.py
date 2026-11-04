@@ -222,6 +222,37 @@ def test_desfazer_so_por_post_e_com_mensagem(client, equipe):
     assert not troca.ativa
 
 
+def test_desfazer_sem_login_vai_para_entrar_e_a_troca_continua_ativa(client, equipe):
+    troca = trocar(equipe[0], equipe[2], por=equipe[0])
+
+    resposta = client.post(reverse("escala_desfazer", args=[troca.pk]))
+
+    assert resposta.status_code == 302
+    assert resposta["Location"].startswith("/entrar/")
+    troca.refresh_from_db()
+    assert troca.ativa and troca.desfeita_em is None
+
+
+def test_desfazer_troca_inexistente_da_404_para_membro_e_admin(
+    client, equipe, admin_usuario
+):
+    url = reverse("escala_desfazer", args=[99999])
+    for usuario in (equipe[0], admin_usuario):
+        client.force_login(usuario)
+        assert client.post(url).status_code == 404
+
+
+def test_desfazer_por_terceiro_e_recusado_e_a_troca_continua_ativa(client, equipe):
+    troca = trocar(equipe[0], equipe[2], por=equipe[0])
+    client.force_login(equipe[4])
+
+    resposta = client.post(reverse("escala_desfazer", args=[troca.pk]), follow=True)
+
+    assert "Só quem participa da troca" in resposta.content.decode()
+    troca.refresh_from_db()
+    assert troca.ativa and troca.desfeita_em is None and troca.desfeita_por is None
+
+
 def test_historico_pagina_de_30_em_30(client, equipe, admin_usuario):
     for n in range(31):
         TrocaSabado.objects.create(
