@@ -26,7 +26,7 @@ O histórico agrupa as trocas por rodada (título "Rodada N" com o total de troc
 No /admin/, o mixin `MensagensNoFeminino` (em `fila/admin.py`) põe no feminino as mensagens de sucesso de Troca, Ausência e Rodada; os seletores de pessoa mostram "Escolha uma pessoa" como opção vazia.
 A tela inicial do /admin/ tem três blocos, nesta ordem: **Galão de água** (Trocas do galão, Ausências, Rodadas), **Escala de sábado** (Trocas de sábado, Sábados sem escala, Sábados com 2 pessoas, Sábados fechados, Configuração da escala) e **Usuários**. "Grupos" (Autenticação e autorização) não aparece na lista nem no menu lateral, mas `/admin/auth/group/` segue abrindo para o superusuário. A ordem vem de `config/admin.py` (`PainelAdminSite`, ligado por `config/apps.py` no lugar de `django.contrib.admin` em `INSTALLED_APPS`); um app novo entra depois, em ordem alfabética.
 
-**Página pública e identidade:** quem não entrou vê, em `/`, uma página pública (`templates/publica/inicio.html`), só HTML e CSS, sem JavaScript e sem ler o banco; quem entrou vê o galão no mesmo endereço. A logo "interseção" (dois quadrados que se cruzam, com o encontro vazado) está no partial `templates/_logo.html` e aparece no cabeçalho, na entrada e na página pública; o ícone da aba (`static/img/favicon.svg`, `favicon.ico` e `apple-touch-icon.png`) é a mesma marca, em branco sobre fundo azul. A tela de entrada (`/entrar/`) tem o cartão centralizado na tela.
+**Página pública e identidade:** quem não entrou vê, em `/`, uma página pública (`templates/publica/inicio.html`), só HTML e CSS, sem JavaScript e sem ler o banco; quem entrou vê o galão no mesmo endereço. A logo (três pontos ligados por um anel aberto, uma cor só) está no partial `templates/_logo.html` e aparece no cabeçalho, na entrada e na página pública; o ícone da aba (`static/img/favicon.svg`, `favicon.ico` e `apple-touch-icon.png`) é a mesma marca, em branco sobre fundo azul. A tela de entrada (`/entrar/`) tem o cartão centralizado na tela.
 
 ---
 
@@ -162,7 +162,7 @@ Vantagem: se um registro for corrigido, o saldo se acerta sozinho. Não existe n
 | # | Módulo | O que entrega | Situação |
 |---|---|---|---|
 | 7 | Escala de sábado | Rodízio por posição, sábados sem escala e com 2 pessoas, sábados congelados (comando `congelar_escala`), trocas de sábado (registrar, desfazer, histórico, admin) e as telas "Escala", "Próximos sábados", "Trocar de sábado", "Trocas" e "Regras da escala" | Entregue |
-| 8 | Página pública e identidade | Página em `/` para quem não entrou, logo "interseção", ícone da aba azul e tela de entrada com o cartão centralizado | Entregue |
+| 8 | Página pública e identidade | Página em `/` para quem não entrou, logo "três pontos ligados", ícone da aba azul e tela de entrada com o cartão centralizado | Entregue |
 | 9 | Login por matrícula | Campo único "E-mail ou matrícula", bloqueio de tentativas por pessoa (matrícula e e-mail contam juntos) e mensagem única; o e-mail continua cadastrado | Entregue |
 | 10 | Segurança das telas logadas | Telas de quem está logado sem cache do navegador | Entregue |
 
