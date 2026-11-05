@@ -1,6 +1,42 @@
 # Help Desk Equipe
 
-Help Desk Equipe (nome técnico `galao-helpdesk`): controle de quem é a vez de trocar o galão de água do time de Help Desk.
+Sistema web que o time de Help Desk de uma universidade usa no dia a dia para controlar a **troca do galão de água** e a **escala de sábado**. Substituiu duas planilhas Excel, guarda o histórico de tudo e está em produção, com uso real pela equipe (cerca de 8 pessoas).
+
+**No ar:** https://helpdesk-equipe.up.railway.app (acesso só para quem foi cadastrado)
+
+<!-- PRINT 1: docs/img/pagina-publica.png - página pública, com o desenho animado da equipe -->
+<!-- PRINT 2: docs/img/galao-inicio.png - tela inicial do galão: vez, fila e botão "Troquei o galão" -->
+<!-- PRINT 3: docs/img/escala-sabado.png - escala de sábado: próximo sábado e próximos sábados -->
+
+## O problema
+
+Na planilha, ninguém sabia ao certo de quem era a vez, as trocas feitas por um colega se perdiam e a escala dos sábados dependia de alguém lembrar a ordem. O sistema responde "de quem é a vez?" em uma tela, no computador ou no celular.
+
+## O que faz
+
+- **Galão:** fila fixa, vez calculada pelo servidor, registro da troca em um clique, cobertura (quem troca no lugar de outro) com dívida calculada a partir do histórico e ausências (quem está ausente é pulado e volta na próxima rodada).
+- **Escala de sábado:** rodízio por posição, trocas de sábado entre pessoas, sábados com 2 pessoas ou sem escala, e sábados passados congelados (não mudam depois, mesmo que a fila mude).
+- **Login por e-mail ou matrícula**, cadastro só pelo admin e troca de senha obrigatória no primeiro acesso.
+- **Painel de administração** organizado em Galão, Escala e Usuários.
+
+## Decisões técnicas que valem destaque
+
+- **Regras no servidor, não na tela:** a vez, a dívida e a permissão de desfazer uma troca são calculadas e conferidas no backend.
+- **Segurança de login:** limite progressivo de tentativas (por conta e por IP), sem bloqueio permanente que permita travar a conta de outra pessoa; páginas logadas sem cache; erro de formulário vencido com tela amigável e log do motivo.
+- **Histórico que não se perde:** sábados passados são congelados e cada troca guarda quem registrou, quem trocou e a observação.
+- **Testes:** mais de 740 testes (pytest), com regras de negócio, acesso por item e provas de que o teste falha quando o código é quebrado. O hash de senha é rápido só nos testes e forte em produção (com um teste que garante isso).
+- **CI/CD:** GitHub Actions (ruff, testes e GitGuardian) em cada pull request; deploy automático no Railway só com o CI verde.
+- **Sem dado pessoal no repositório:** nomes, matrículas, e-mails e senhas da equipe nunca entram no código, nos testes nem nos documentos.
+
+## Stack
+
+Python 3.13 · Django 6.1 · PostgreSQL · templates Django · Tailwind CSS 4 (CLI, sem Node) · Gunicorn + WhiteNoise · pytest · ruff · GitHub Actions · Railway
+
+O nome técnico da pasta do projeto é `galao-helpdesk`.
+
+## Como este projeto foi feito
+
+Projeto solo de [Mateus Mendes](https://github.com/mateusmendess), estudante de Sistemas de Informação, com IA como apoio: eu defini as regras e conferi cada mudança; o código saiu em pull requests pequenos, com testes e CI verde antes de cada merge (mais de 50 pull requests). A descrição completa do sistema está em [`estrutura.md`](estrutura.md).
 
 ## Como rodar localmente (Windows, PowerShell)
 
