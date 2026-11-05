@@ -122,11 +122,12 @@ def test_svg_valido_com_as_cores_da_identidade():
     assert raiz.get("viewBox") == "0 0 64 64"
     cores = {e.get(attr) for e in raiz.iter() for attr in ("fill", "stroke")}
     # Fundo azul e marca branca, para a aba se destacar em tema claro e escuro.
-    assert cores - {None} == {"#0B4F6C", "#fff"}
+    assert cores - {None, "none"} == {"#0B4F6C", "#fff"}
     fundo = raiz.find("{http://www.w3.org/2000/svg}rect")
     assert fundo.get("rx") == "15" and fundo.get("fill") == "#0B4F6C"
-    # O encontro dos dois quadrados fica vazado e mostra o azul.
-    marca = next(raiz.iter("{http://www.w3.org/2000/svg}path"))
-    assert marca.get("fill-rule") == "evenodd" and marca.get("fill") == "#fff"
+    # Tres pontos brancos ligados por tres arcos de anel (traco branco).
+    ns = "{http://www.w3.org/2000/svg}"
+    assert len(list(raiz.iter(ns + "circle"))) == 3
+    assert len(list(raiz.iter(ns + "path"))) == 3
     texto = arquivo("img/favicon.svg").decode()
     assert "mask" not in texto and " id=" not in texto

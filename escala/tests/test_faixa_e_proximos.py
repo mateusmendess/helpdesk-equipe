@@ -155,7 +155,7 @@ def test_faixa_azul_com_e_sem_abas(client, equipe, nome):
     assert FAIXA in cabecalho
     # A logo usa currentColor e fica branca sobre o azul.
     assert re.search(
-        r'<svg class="[^"]*\btext-white\b[^"]*" viewBox="0 0 64 64"', cabecalho
+        r'<svg class="[^"]*\btext-white\b[^"]*" viewBox="0 -3 64 64"', cabecalho
     )
     assert 'fill="currentColor"' in cabecalho
     if "<nav" in cabecalho:
