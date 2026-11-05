@@ -153,3 +153,7 @@ O Python vem do `.python-version` (3.13). Variáveis de ambiente (sem valores aq
 - `DATABASE_URL`: URL do PostgreSQL do Railway
 
 O `criar_equipe_de_teste` não roda em produção (recusa com `DEBUG=False`).
+
+## Licença
+
+Todos os direitos reservados. O código está público para consulta e portfólio.
