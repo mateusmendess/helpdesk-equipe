@@ -1,5 +1,7 @@
 # Help Desk Equipe
 
+[![CI](https://github.com/mateusmendess/helpdesk-equipe/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mateusmendess/helpdesk-equipe/actions/workflows/ci.yml) ![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white) ![Django 6.1](https://img.shields.io/badge/Django-6.1-092E20?logo=django&logoColor=white)
+
 Sistema web que o time de Help Desk de uma universidade usa no dia a dia para controlar a **troca do galão de água** e a **escala de sábado**. Substituiu duas planilhas Excel, guarda o histórico de tudo e está em produção, com uso real pela equipe (cerca de 8 pessoas).
 
 **No ar:** https://helpdesk-equipe.up.railway.app (acesso só para quem foi cadastrado)
@@ -7,6 +9,11 @@ Sistema web que o time de Help Desk de uma universidade usa no dia a dia para co
 <!-- PRINT 1: docs/img/pagina-publica.png - página pública, com o desenho animado da equipe -->
 <!-- PRINT 2: docs/img/galao-inicio.png - tela inicial do galão: vez, fila e botão "Troquei o galão" -->
 <!-- PRINT 3: docs/img/escala-sabado.png - escala de sábado: próximo sábado e próximos sábados -->
+
+## Telas
+
+O sistema é de uso interno e exige login, por isso não há demo pública.
+Os prints das telas serão adicionados aqui em breve.
 
 ## O problema
 
